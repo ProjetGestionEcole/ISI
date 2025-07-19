@@ -1,27 +1,76 @@
 # Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+Ce projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version **20.1.x**.
 
-## Development server
+##  Démarrage rapide
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Prérequis
+- [Node.js](https://nodejs.org) version 18 ou 20 recommandée.
+- Pas besoin d’installer Angular CLI globalement.
 
-## Code scaffolding
+### Installation
+```bash
+npm install
+```
+Lancer le serveur de développement
+Utilisez l’une de ces commandes :
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+npm start
+```
+Ou
+```bash
+npx ng serve
+```
+- Ces deux commandes utilisent la version CLI locale (@angular/cli@20.x), et garantissent que le projet fonctionne quel que soit ce que vous avez globalement.
+- Accédez à http://localhost:4200/. L’application se recharge automatiquement si vous modifiez les fichiers sources.---
+### ⚠️À savoir sur ng serve
+Si vous faites directement :
+```bash
+ng serve
+```
+Et que vous avez :
+une version différente de CLI (ex: Angular 17 ou 16) installée globalement
+ou pas de CLI global du tout.
+Le projet risque de ne pas fonctionner ou générer des erreurs.
 
-## Build
+---
+### 💡Recommandation
+Utilisez toujours npx ng serve ou npm start (relié à la version CLI locale fournie dans ce projet).
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Si vous voulez tout de même faire ng serve, vous pouvez aligner votre CLI global :
 
-## Running unit tests
+```bash
+npm install -g @angular/cli@20
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+📂 Structure du projet
 
-## Running end-to-end tests
+```
+frontend/
+├── 📁 node_modules/                 # Dépendances installées automatiquement via npm (à ne pas modifier manuellement)
+├── 📁 src/                          # Code source principal de l'application Angular (composants, routes, services, etc.)
+│   ├── favicon.ico                  # Icône de l'application
+│   ├── index.html                   # Page HTML principale
+│   ├── main.ts                     # Point d’entrée côté client
+│   ├── main.server.ts              # Point d’entrée côté serveur (SSR)
+│   ├── styles.css                  # Styles globaux
+│   ├── 📁 app/                     # Composants, services, routes Angular
+│   │   ├── app.component.ts        # Composant racine
+│   │   ├── app.component.html      # Template du composant racine
+│   │   ├── app.component.css       # Styles du composant racine
+│   │   ├── app.component.spec.ts  # Tests unitaires
+│   │   ├── app.config.ts           # Configuration Angular custom (exemple)
+│   │   ├── app.config.server.ts    # Config serveur (SSR)
+│   │   └── app.routes.ts           # Définition des routes Angular
+│   └── 📁 assets/                  # Ressources statiques (images, polices, etc.)
+│       └── .gitkeep                # Fichier vide pour garder le dossier dans git
+├── 📄 angular.json                 # Configuration CLI Angular (build, test, serve)
+├── 📄 package.json                # Dépendances, scripts et métadonnées npm
+├── 📄 package-lock.json           # Verrouillage des versions npm exactes
+├── 📄 tsconfig.json               # Configuration TypeScript globale
+├── 📄 tsconfig.app.json           # Config TypeScript spécifique au projet Angular (src/)
+├── 📄 README.md                   # Documentation du projet
+├── 📄 LICENSE.json                # Licence du projet (optionnelle)
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
