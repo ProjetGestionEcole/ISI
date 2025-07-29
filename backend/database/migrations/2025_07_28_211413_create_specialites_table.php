@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('code_specialite')->unique()->nullable(false);
+            $table->integer('duree'); // Durée en années
             $table->timestamps();
         });
     }
