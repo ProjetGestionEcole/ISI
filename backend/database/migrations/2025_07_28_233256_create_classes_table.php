@@ -15,13 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('code_classe')->unique();
             $table->string('nom_classe');
-            $table->string('annee_scolaire')->references('annee_scolaire')->on('annee_scolaires');
 
             // Clés étrangères 
             $table->foreignId('niveau_id')->constrained('niveaux')->onDelete('cascade');
             $table->foreignId('specialite_id')->constrained('specialites')->onDelete('cascade');
-            $table->foreignId('prof_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('etudiant_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

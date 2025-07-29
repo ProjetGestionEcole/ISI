@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('code_semestre');
             $table->foreign('code_semestre')->references('code_semestre')->on('semestres')->onDelete('cascade');            
-            $table->integer('credits');
+            $table->integer('credits')->nullable(true); // Crédits ECTS
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('matieres', function (Blueprint $table) {
 
             $table->string('code_matiere')->primary();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('code_ue');
             $table->foreign('code_ue')->references('code_ue')->on('ues')->onDelete('cascade');
             $table->integer('coef');
