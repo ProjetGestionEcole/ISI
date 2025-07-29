@@ -15,13 +15,14 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        /*User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-        ]);
+        ]);*/
 
         // Les parents d'abord (niveau & spécialité)
     $this->call([
+        UserSeeder::class,
         NiveauxSeeder::class,
         SpecialiteSeeder::class,
         SemestreSeeder::class,
