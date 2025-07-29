@@ -2,10 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -20,20 +17,24 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);*/
 
-        // Les parents d'abord (niveau & spécialité)
+
+        //Classes Mères n'ont pas de dépendances
     $this->call([
         UserSeeder::class,
         NiveauxSeeder::class,
         SpecialiteSeeder::class,
-        SemestreSeeder::class,
+        MentionSeeder::class,
+        AnneeScolaireSeeder::class,
     ]);
 
         // Ensuite les enfants (UE, matières, etc)
-        /*$this->call([
-            UeSeeder::class,
-            UserSeeder::class,
+        $this->call([
             // Ajoute d'autres seeders si nécessaire
+            ClasseSeeder::class,
+            SemestreSeeder::class,
+            UeSeeder::class,
+            MatiereSeeder::class,
+            InscriptionSeeder::class,
         ]);
-*/
     }
 }

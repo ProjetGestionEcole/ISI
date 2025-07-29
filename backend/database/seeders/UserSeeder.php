@@ -5,20 +5,39 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        
+
+        $usedEmails = [];
+
+        function generateUniqueEmail($prenom, $nom, $domaines, &$usedEmails) {
+            do {
+                $email = strtolower($prenom . '.' . $nom . rand(1, 999)) . '@' . $domaines[array_rand($domaines)];
+            } while (in_array($email, $usedEmails));
+            
+            $usedEmails[] = $email;
+            return $email;
+        }
+
+
+        $prenomsGarcons = ['Mamadou', 'Oumar', 'Cheikh', 'Ibrahima', 'Abdoulaye', 'Modou', 'Serigne'];
+        $prenomsFilles = ['Aminata', 'Fatou', 'Coumba', 'Adji', 'Mame', 'Ndeye', 'Seynabou'];
+        $noms = ['Diallo', 'Diop', 'Faye', 'Fall', 'Ndiaye', 'Sow', 'Ba', 'Gueye', 'Sy'];
+        $roles = ['Admin', 'Etudiant', 'Prof', 'Parent'];
+        $domaines = ['esp.sn', 'ucad.sn', 'groupeisi.com'];
+        $domainesparent = ['gmail.com', 'yahoo.fr', 'hotmail.com'];
+
+        $users = [];
+        $hashedPassword = Hash::make('passer');
+
         // Ajouter un utilisateur admin par défaut
         DB::table('users')->insert([
             'name' => 'Admin',
             'email' => 'admin@example.com',
-            'password' => Hash::make('admin123'),
+            'password' =>$hashedPassword,
             'role' => 'Admin',
             'created_at' => now(),
             'updated_at' => now(),
@@ -27,105 +46,80 @@ class UserSeeder extends Seeder
          DB::table('users')->insert([
             'name' => 'Admin',
             'email' => 'admin1@example.com',
-            'password' => Hash::make('admin123'),
+            'password' =>$hashedPassword,
             'role' => 'Admin',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $prenomsMasculins = ['Mamadou', 'Ibrahima', 'Cheikh', 'Serigne', 'Oumar', 'Modou', 'Khadim', 'Abdoulaye', 'Boubacar', 'Assane', 'Aliou'];
-        $prenomsFeminins = ['Awa', 'Fatou', 'Coumba', 'Astou', 'Mariama', 'Amy', 'Seynabou', 'Ndèye', 'Adama'];
-
-        $noms = ['Ndiaye', 'Diop', 'Sarr', 'Fall', 'Sow', 'Ba', 'Diallo', 'Gueye', 'Sy', 'Kane', 'Cissé', 'Dia', 'Mbaye', 'Faye', 'Thiam', 'Diouf', 'Lo', 'Diagne', 'Camara', 'Ndoye'];
-        $extensions = ['esp.sn', 'gmail.com', 'yahoo.fr', 'groupeisi.com'];
-
-
-        // Générer 10 étudiants avec leurs parents
-        // Étudiants avec parents
-        for ($i = 0; $i < 10; $i++) {
-            $sexe = rand(0, 1) ? 'M' : 'F';
-            $prenom = $sexe === 'M' ? $prenomsMasculins[array_rand($prenomsMasculins)] : $prenomsFeminins[array_rand($prenomsFeminins)];
+        $nbEtudiants = 10;
+        $nb_profs = 5;
+        // Générer des utilisateurs étudiants et leurs parents
+        for ($i = 0; $i < $nbEtudiants; $i++) {
+            $sexe = rand(0, 1) ? 'H' : 'F';
+            $prenom = $sexe === 'H' ? $prenomsGarcons[array_rand($prenomsGarcons)] : $prenomsFilles[array_rand($prenomsFilles)];
             $nomFamille = $noms[array_rand($noms)];
-            $nomEtudiant = "$prenom $nomFamille";
+            $email = generateUniqueEmail($prenom, $nomFamille, $domaines, $usedEmails);
 
-            $emailEtudiant = Str::slug($prenom . '.' . $nomFamille) . rand(100, 999) . '@' . $extensions[array_rand($extensions)];
-
-            $etudiantId = DB::table('users')->insertGetId([
-                'name' => $nomEtudiant,
-                'email' => $emailEtudiant,
-                'password' => Hash::make('passer'),
+            // Étudiant
+            $users[] = [
+                'name' => "$prenom $nomFamille",
+                'email' => $email,
+                'password' => $hashedPassword,
                 'role' => 'Etudiant',
                 'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                'updated_at' => now()
+            ];
 
-            // Père avec même nom
-            $prenomPere = $prenomsMasculins[array_rand($prenomsMasculins)];
-            $nomPere = "$prenomPere $nomFamille";
-            $emailPere = Str::slug($prenomPere . '.' . $nomFamille) . rand(100, 999) . '@' . $extensions[array_rand($extensions)];
-
-            $pereId = DB::table('users')->insertGetId([
-                'name' => $nomPere,
+            // Père (même nom de famille)
+            $prenomPere = $prenomsGarcons[array_rand($prenomsGarcons)];
+            $emailPere = generateUniqueEmail($prenom, $nomFamille, $domainesparent, $usedEmails);
+            $users[] = [
+                'name' => "$prenomPere $nomFamille",
                 'email' => $emailPere,
-                'password' => Hash::make('passer'),
+                'password' => $hashedPassword,
                 'role' => 'Parent',
                 'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                'updated_at' => now()
+            ];
 
-            DB::table('leparents')->insert([
-                'user_id' => $pereId,
-                'eleve_id' => $etudiantId,
-                'relation' => 'pere',
-                'profession' => 'Commerçant',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            // Mère avec nom aléatoire (peut être différent)
-            $prenomMere = $prenomsFeminins[array_rand($prenomsFeminins)];
-            $nomFamilleMere = $noms[array_rand($noms)];
-            $nomMere = "$prenomMere $nomFamilleMere";
-            $emailMere = Str::slug($prenomMere . '.' . $nomFamilleMere) . rand(100, 999) . '@' . $extensions[array_rand($extensions)];
-
-            $mereId = DB::table('users')->insertGetId([
-                'name' => $nomMere,
+            // Mère (peut avoir un autre nom)
+            $prenomMere = $prenomsFilles[array_rand($prenomsFilles)];
+            $nomMere = $noms[array_rand($noms)];
+            $emailMere = generateUniqueEmail($prenom, $nomFamille, $domainesparent, $usedEmails);
+            $users[] = [
+                'name' => "$prenomMere $nomMere",
                 'email' => $emailMere,
-                'password' => Hash::make('passer'),
+                'password' => $hashedPassword,
                 'role' => 'Parent',
                 'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            DB::table('leparents')->insert([
-                'user_id' => $mereId,
-                'eleve_id' => $etudiantId,
-                'relation' => 'mere',
-                'profession' => 'Institutrice',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                'updated_at' => now()
+            ];
         }
 
-         // Profs indépendants
-        for ($i = 0; $i < 10; $i++) {
-            $sexe = rand(0, 1) ? 'M' : 'F';
-            $prenom = $sexe === 'M' ? $prenomsMasculins[array_rand($prenomsMasculins)] : $prenomsFeminins[array_rand($prenomsFeminins)];
+
+        for ($i = 0; $i < $nb_profs; $i++) {
+            $sexe = rand(0, 1) ? 'H' : 'F';
+            $prenom = $sexe === 'H' ? $prenomsGarcons[array_rand($prenomsGarcons)] : $prenomsFilles[array_rand($prenomsFilles)];
             $nomFamille = $noms[array_rand($noms)];
-            $nomProfs = "$prenom $nomFamille";
+            $email = generateUniqueEmail($prenom, $nomFamille, $domaines, $usedEmails);
 
-
-            $emailProf = Str::slug($prenom . '.' . $nomFamille) . rand(100, 999) . '@' . $extensions[array_rand($extensions)];
-
-            $etudiantId = DB::table('users')->insertGetId([
-                'name' => $nomProfs,
-                'email' => $emailProf,
-                'password' => Hash::make('passer'),
+            // Profs
+            $users[] = [
+                'name' => "$prenom $nomFamille",
+                'email' => $email,
+                'password' => $hashedPassword,
                 'role' => 'Prof',
                 'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                'updated_at' => now()
+            ];
+
         }
         
+        // Insertion en une seule fois
+        DB::table('users')->insert($users);
     }
+
+
+    
 }

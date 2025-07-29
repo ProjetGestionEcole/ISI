@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('mentions', function (Blueprint $table) {
             $table->id();
-            $table->string('apreciation'); // ex: Passable, Bien...
+            $table->string('appreciation'); // ex: Passable, Bien...
             $table->float('min_moyenne'); // ex: 10.0
             $table->float('max_moyenne'); // ex: 11.99
             $table->timestamps();
