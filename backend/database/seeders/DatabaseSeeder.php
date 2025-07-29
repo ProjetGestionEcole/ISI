@@ -19,5 +19,20 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Les parents d'abord (niveau & spécialité)
+    $this->call([
+        NiveauxSeeder::class,
+        SpecialiteSeeder::class,
+        SemestreSeeder::class,
+    ]);
+
+        // Ensuite les enfants (UE, matières, etc)
+        /*$this->call([
+            UeSeeder::class,
+            UserSeeder::class,
+            // Ajoute d'autres seeders si nécessaire
+        ]);
+*/
     }
 }
