@@ -17,11 +17,11 @@ return new class extends Migration
             $table->foreign('code_matiere')->references('code_matiere')->on('matieres')->onDelete('cascade');
             $table->string('code_niveau');
             $table->foreign('code_niveau')->references('code_niveau')->on('niveaux')->onDelete('cascade');
-            $table->string('code_specialite')->nullable();
+            $table->string('code_specialite');
             $table->foreign('code_specialite')->references('code_specialite')->on('specialites')->onDelete('cascade');
-            $table->string('code_classe')->nullable();
+            $table->string('code_classe');
             $table->foreign('code_classe')->references('code_classe')->on('classes')->onDelete('cascade');
-            $table->string('code_ue')->nullable();
+            $table->string('code_ue');
             $table->foreign('code_ue')->references('code_ue')->on('ues')->onDelete('cascade');
             $table->foreignId('code_prof')->references('id')->on('users')->onDelete('cascade');
             $table->string('annee_scolaire');

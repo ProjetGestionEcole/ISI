@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('mcc')->nullable();
-            $table->tinyInteger('examen')->nullable();
+            $table->decimal('mcc', 5, 2)->nullable();   
+            $table->decimal('examen', 5, 2)->nullable(); 
 
             // Foreign keys
             $table->string('code_matiere');
