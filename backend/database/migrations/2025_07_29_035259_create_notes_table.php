@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
+            $table->tinyInteger('mcc')->nullable();
+            $table->tinyInteger('examen')->nullable();
+
+            // Foreign keys
+            $table->string('code_matiere');
+            $table->foreign('code_matiere')->references('code_matiere')->on('matieres')->onDelete('cascade');
+            $table->foreignId('id_enseignant')->constrained('users')->onDelete('cascade');
+            $table->foreignId('id_etudiant')->constrained('users')->onDelete('cascade');
+
+
             $table->timestamps();
         });
     }
