@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
             UeSeeder::class,
             MatiereSeeder::class,
             InscriptionSeeder::class,
+            EnseignementSeeder::class,
+            NoteSeeder::class,
         ]);
     }
 }

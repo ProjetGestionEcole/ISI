@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('etudiant_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('classe_id')->constrained('classes')->onDelete('cascade');
-            $table->string('annee_scolaire');
 
+            $table->string('code_classe');
+            $table->foreign('code_classe')->references('code_classe')->on('classes')->onDelete('cascade');
+
+            $table->string('annee_scolaire');
             $table->foreign('annee_scolaire')->references('annee_scolaire')->on('annee_scolaires')->onDelete('cascade');
-            $table->foreignId('niveau_id')->constrained('niveaux')->onDelete('cascade');
-            $table->foreignId('specialite_id')->constrained('specialites')->onDelete('cascade');
             $table->date('date_inscription');
             $table->enum('statut', ['active', 'inactive'])->default('active');
             $table->string('code_inscription')->unique();

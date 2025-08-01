@@ -48,6 +48,6 @@ class SpecialiteSeeder extends Seeder
                 ['name' => $specialite['name'], 'duree' => $specialite['duree'] ?? 5]
             );
         }
-
+//        $this->command->info('Les spécialités ont été insérées avec succès.');
     }
 }
