@@ -12,16 +12,17 @@ class InscriptionSeeder extends Seeder
     {
         $etudiants = DB::table('users')->where('role', 'Etudiant')->pluck('id')->toArray();
         $anneeScolaires = DB::table('annee_scolaires')->pluck('annee_scolaire')->toArray();
-        $classes = DB::table('classes')->select('code_classe')->get();
+        $classes = DB::table('classes')->pluck('code_classe')->toArray();
 
-        // Vérification minimale
-        if (empty($etudiants) || empty($anneeScolaires) || $classes->isEmpty()) {
-            $this->command->warn(" Données insuffisantes pour insérer des inscriptions.");
+        if (empty($etudiants) || empty($anneeScolaires) || empty($classes)) {
+            $this->command->warn("Pas assez de données pour les inscriptions.");
             return;
         }
 
+        $etudiants = array_slice($etudiants, 0, 5); // Forcer 5 inscriptions max
+
         foreach ($etudiants as $etudiantId) {
-            $classe = $classes->random();
+            $classe = $classes[array_rand($classes)];
             $anneeScolaire = $anneeScolaires[array_rand($anneeScolaires)];
 
             DB::table('inscriptions')->updateOrInsert(
@@ -30,7 +31,7 @@ class InscriptionSeeder extends Seeder
                     'annee_scolaire' => $anneeScolaire,
                 ],
                 [
-                    'code_classe' => $classe->code_classe,
+                    'code_classe' => $classe,
                     'date_inscription' => now(),
                     'statut' => 'active',
                     'code_inscription' => 'INS-' . strtoupper(Str::random(8)),
@@ -40,6 +41,6 @@ class InscriptionSeeder extends Seeder
             );
         }
 
-        $this->command->info("Inscriptions générées avec succès !");
+        $this->command->info("5 inscriptions générées avec succès.");
     }
 }

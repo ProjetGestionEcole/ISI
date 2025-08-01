@@ -2,41 +2,41 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class EnseignementSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-    */
     public function run(): void
     {
-      
-   
-      $matieres = array_slice(DB::table('matieres')->pluck('code_matiere')->toArray(), 0, 5);
-      $classes = array_slice(DB::table('classes')->pluck('code_classe')->toArray(), 0, 5);
-      $professeurs = DB::table('users')->where('role', 'Prof')->pluck('id')->toArray();
-       // Vérifiez que toutes les données nécessaires sont disponibles
-       if (empty($matieres)|| empty($classes)  || empty($professeurs) ) {
-          $this->command->error('Certaines tables nécessaires sont vides. Veuillez vérifier vos seeders.');
-          return;
-       }
+        $matieres = DB::table('matieres')->pluck('code_matiere')->toArray();
+        $classes = DB::table('classes')->pluck('code_classe')->toArray();
+        $profs = DB::table('users')->where('role', 'Prof')->pluck('id')->toArray();
 
-       // Exemple de logique pour créer des enseignements
-       foreach ($classes as $classe) {
-          foreach ($matieres as $matiere) {
-             DB::table('enseignements')->insert([
-                'code_classe' => $classe,
-                'code_matiere' => $matiere,
-                'code_prof' => $professeurs[array_rand($professeurs)],
-                'created_at' => now(),
-                'updated_at' => now(),
-             ]);
-          }
-       }    
-      
+        if (count($matieres) < 1 || count($classes) < 1 || count($profs) < 1) {
+            $this->command->error('Tables vides. Ajoutez des profs, matières, classes.');
+            return;
+        }
 
+        $matieres = array_slice($matieres, 0, 5);
+        $classes = array_slice($classes, 0, 5);
+
+        foreach ($classes as $classe) {
+            foreach ($matieres as $matiere) {
+                DB::table('enseignements')->updateOrInsert(
+                    [
+                        'code_classe' => $classe,
+                        'code_matiere' => $matiere,
+                    ],
+                    [
+                        'code_prof' => $profs[array_rand($profs)],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+        }
+
+        $this->command->info("Enseignements (5 classes × 5 matières) créés.");
     }
 }
