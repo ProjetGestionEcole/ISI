@@ -1,4 +1,5 @@
-import { Injectable, effect, signal, computed } from '@angular/core';
+import { Injectable, effect, signal, computed, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Subject } from 'rxjs';
 
 export interface layoutConfig {
@@ -78,7 +79,7 @@ export class LayoutService {
 
     private initialized = false;
 
-    constructor() {
+    constructor(@Inject(PLATFORM_ID) private platformId: Object) {
         effect(() => {
             const config = this.layoutConfig();
             if (config) {
@@ -120,6 +121,10 @@ export class LayoutService {
     }
 
     toggleDarkMode(config?: layoutConfig): void {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
+        
         const _config = config || this.layoutConfig();
         if (_config.darkTheme) {
             document.documentElement.classList.add('app-dark');
@@ -156,6 +161,9 @@ export class LayoutService {
     }
 
     isDesktop() {
+        if (!isPlatformBrowser(this.platformId)) {
+            return true; // Default to desktop on server
+        }
         return window.innerWidth > 991;
     }
 

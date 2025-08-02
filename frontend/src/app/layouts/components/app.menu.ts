@@ -78,7 +78,7 @@ export class AppMenu {
                     {
                         label: 'Crud',
                         icon: 'pi pi-fw pi-pencil',
-                        routerLink: ['/pages/crud']
+                        routerLink: ['/dashboard/crud']
                     },
                     {
                         label: 'Not Found',
