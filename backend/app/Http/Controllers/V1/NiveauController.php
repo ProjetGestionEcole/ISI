@@ -10,7 +10,7 @@ class NiveauController extends Controller
 {
     protected $niveauService;
     /**
-     * OffreController constructor.
+     * NiveauControlller constructor.
      */
     public function __construct()
     {
@@ -33,6 +33,9 @@ class NiveauController extends Controller
     public function store(Request $request)
     {
         //
+        $data = $request->all();
+        $niveau = $this->niveauService->createNiveau($data);
+        return response()->json($niveau, 201);
     }
 
     /**
@@ -41,6 +44,11 @@ class NiveauController extends Controller
     public function show(string $id)
     {
         //
+        $niveau = $this->niveauService->findNiveauById($id);
+        if (!$niveau) {
+            return response()->json(['message' => 'Niveau not found'], 404);
+        }
+        return response()->json($niveau);
     }
 
     /**
@@ -49,6 +57,12 @@ class NiveauController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $data = $request->all();
+        $niveau = $this->niveauService->updateNiveau($id, $data);
+        if (!$niveau) {
+            return response()->json(['message' => 'Niveau not found'], 404);
+        }
+        return response()->json($niveau);
     }
 
     /**
@@ -57,5 +71,10 @@ class NiveauController extends Controller
     public function destroy(string $id)
     {
         //
+        $deleted = $this->niveauService->deleteNiveau($id);
+        if (!$deleted) {
+            return response()->json(['message' => 'Niveau not found'], 404);
+        }
+        return response()->json(['message' => 'Niveau deleted successfully']);
     }
 }
