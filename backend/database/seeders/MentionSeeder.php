@@ -13,14 +13,51 @@ class MentionSeeder extends Seeder
     public function run(): void
     {
         //
-        $mentions[] = [            
-                'appreciation' => "Insuffisant",'min_moyenne' => 08.00,'max_moyenne' =>9.99, 'created_at' => now(),'updated_at' => now(),
-                'appreciation' => "Mention Passable",'min_moyenne' => 10.00,'max_moyenne' =>11.99, 'created_at' => now(),'updated_at' => now(),
-                'appreciation' => "Mention Assez Bien",'min_moyenne' => 12.0,'max_moyenne' =>13.99, 'created_at' => now(),'updated_at' => now(),
-                'appreciation' => "Mention Bien",'min_moyenne' => 14.0,'max_moyenne' =>15.99, 'created_at' => now(),'updated_at' => now(),
-                'appreciation' => "Mention Très Bien",'min_moyenne' => 16.0,'max_moyenne' =>18.99, 'created_at' => now(),'updated_at' => now(),
-                'appreciation' => "Mention Excellent",'min_moyenne' => 19.0,'max_moyenne' =>20.00, 'created_at' => now(),'updated_at' => now(),
+        $mentions = [
+            [
+                'appreciation' => "Insuffisant",
+                'min_moyenne' => 8.00,
+                'max_moyenne' => 9.99,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'appreciation' => "Mention Passable",
+                'min_moyenne' => 10.00,
+                'max_moyenne' => 11.99,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'appreciation' => "Mention Assez Bien",
+                'min_moyenne' => 12.0,
+                'max_moyenne' => 13.99,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'appreciation' => "Mention Bien",
+                'min_moyenne' => 14.0,
+                'max_moyenne' => 15.99,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'appreciation' => "Mention Très Bien",
+                'min_moyenne' => 16.0,
+                'max_moyenne' => 18.99,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'appreciation' => "Mention Excellent",
+                'min_moyenne' => 19.0,
+                'max_moyenne' => 20.00,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
+
         foreach ($mentions as $mention) {
             Mention::updateOrCreate(
                 ['appreciation' => $mention['appreciation']],

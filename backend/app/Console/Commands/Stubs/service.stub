@@ -1,0 +1,72 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\{{ model }};
+use Illuminate\Database\Eloquent\Collection;
+
+class {{ class }}
+{
+    /**
+     * Get all {{ modelLowerPlural }}.
+     *
+     * @return Collection
+     */
+    public function getAll{{ modelPlural }}(): Collection
+    {
+        return {{ model }}::all();
+    }
+
+    /**
+     * Find a {{ modelLower }} by ID.
+     *
+     * @param int $id
+     * @return {{ model }}|null
+     */
+    public function find{{ model }}ById(int $id): ?{{ model }}
+    {
+        return {{ model }}::find($id);
+    }
+
+    /**
+     * Create a new {{ modelLower }}.
+     *
+     * @param array $data
+     * @return {{ model }}
+     */
+    public function create{{ model }}(array $data): {{ model }}
+    {
+        return {{ model }}::create($data);
+    }
+
+    /**
+     * Update an existing {{ modelLower }}.
+     *
+     * @param int $id
+     * @param array $data
+     * @return {{ model }}|null
+     */
+    public function update{{ model }}(int $id, array $data): ?{{ model }}
+    {
+        ${{ modelLower }} = $this->find{{ model }}ById($id);
+        if (${{ modelLower }}) {
+            ${{ modelLower }}->update($data);
+        }
+        return ${{ modelLower }};
+    }
+
+    /**
+     * Delete a {{ modelLower }} by ID.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function delete{{ model }}(int $id): bool
+    {
+        ${{ modelLower }} = $this->find{{ model }}ById($id);
+        if (${{ modelLower }}) {
+            return ${{ modelLower }}->delete();
+        }
+        return false;
+    }
+}
