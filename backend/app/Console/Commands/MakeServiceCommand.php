@@ -58,7 +58,7 @@ use Illuminate\Support\Str;
 class MakeServiceCommand extends GeneratorCommand
 {
     protected $name = 'make:service';
-    protected $description = 'Créer une classe de service dans app/Services';
+    protected $description = 'Créer une classe de service dans app/services';
     protected $type = 'Service';
 
     protected function getStub(): string

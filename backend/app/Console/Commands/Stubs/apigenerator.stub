@@ -1,0 +1,58 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Services\{{ model }}Service;
+
+class {{ class }} extends Controller
+{
+    protected ${{ modelLower }}Service;
+
+    public function __construct({{ model }}Service ${{ modelLower }}Service)
+    {
+        $this->{{ modelLower }}Service = ${{ modelLower }}Service;
+    }
+
+    public function index()
+    {
+        ${{ modelLowerPlural }} = $this->{{ modelLower }}Service->getAll{{ modelPlural }}();
+        return response()->json(${{ modelLowerPlural }});
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        ${{ modelLower }} = $this->{{ modelLower }}Service->create{{ model }}($data);
+        return response()->json(${{ modelLower }}, 201);
+    }
+
+    public function show(string $id)
+    {
+        ${{ modelLower }} = $this->{{ modelLower }}Service->find{{ model }}ById($id);
+        if (!${{ modelLower }}) {
+            return response()->json(['message' => '{{ model }} not found'], 404);
+        }
+        return response()->json(${{ modelLower }});
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $data = $request->all();
+        ${{ modelLower }} = $this->{{ modelLower }}Service->update{{ model }}($id, $data);
+        if (!${{ modelLower }}) {
+            return response()->json(['message' => '{{ model }} not found'], 404);
+        }
+        return response()->json(${{ modelLower }});
+    }
+
+    public function destroy(string $id)
+    {
+        $deleted = $this->{{ modelLower }}Service->delete{{ model }}($id);
+        if (!$deleted) {
+            return response()->json(['message' => '{{ model }} not found'], 404);
+        }
+        return response()->json(['message' => '{{ model }} deleted successfully']);
+    }
+}
