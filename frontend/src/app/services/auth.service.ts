@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, map } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 export interface User {
   id: number;
   name: string;
   email: string;
+  role: 'Admin' | 'Etudiant' | 'Prof' | 'Parent';
   email_verified_at?: string;
   created_at: string;
   updated_at: string;
@@ -34,7 +36,7 @@ export interface RegisterData {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8000/api/v1';
+  private baseUrl = `${environment.apiURL}/v1`;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private tokenSubject = new BehaviorSubject<string | null>(null);
 
@@ -129,6 +131,42 @@ export class AuthService {
    */
   getCurrentUserValue(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  /**
+   * Obtenir le rôle de l'utilisateur actuel
+   */
+  getCurrentUserRole(): string | null {
+    const user = this.getCurrentUserValue();
+    return user ? user.role : null;
+  }
+
+  /**
+   * Vérifier si l'utilisateur actuel est un admin
+   */
+  isAdmin(): boolean {
+    return this.getCurrentUserRole() === 'Admin';
+  }
+
+  /**
+   * Vérifier si l'utilisateur actuel est un étudiant
+   */
+  isEtudiant(): boolean {
+    return this.getCurrentUserRole() === 'Etudiant';
+  }
+
+  /**
+   * Vérifier si l'utilisateur actuel est un professeur
+   */
+  isProf(): boolean {
+    return this.getCurrentUserRole() === 'Prof';
+  }
+
+  /**
+   * Vérifier si l'utilisateur actuel est un parent
+   */
+  isParent(): boolean {
+    return this.getCurrentUserRole() === 'Parent';
   }
 
   /**

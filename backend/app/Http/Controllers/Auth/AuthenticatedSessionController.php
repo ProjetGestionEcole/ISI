@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -16,23 +18,22 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        // Validation des données d'entrée
         $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
         ]);
 
-        // Rechercher l'utilisateur par email
+        // Find user by email
         $user = User::where('email', $request->email)->first();
 
-        // Vérifier si l'utilisateur existe et si le mot de passe est correct
+        // Check if user exists and password is correct
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Les informations d\'identification fournies sont incorrectes.']
+                'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        // Créer un token API pour l'utilisateur authentifié
+        // Create token for the user
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
@@ -47,11 +48,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): JsonResponse
     {
-        // Supprimer le token API actuel
+        // Revoke the current user's token
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Déconnecté avec succès'
+            'message' => 'Successfully logged out'
         ]);
     }
 }
