@@ -1,0 +1,102 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedLeparents || !selectedLeparents.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="leparents()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['nom','prenom','telephone','email']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedLeparents" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Parents</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
+                        <th pSortableColumn="prenom">Prénom <p-sortIcon field="prenom"></p-sortIcon></th>
+                        <th pSortableColumn="telephone">Téléphone <p-sortIcon field="telephone"></p-sortIcon></th>
+                        <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+                        <th pSortableColumn="profession">Profession <p-sortIcon field="profession"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-leparent>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="leparent"></p-tableCheckbox>
+                        </td>
+                        <td>{{leparent.id}}</td>
+                        <td>{{leparent.nom}}</td>
+                        <td>{{leparent.prenom}}</td>
+                        <td>{{leparent.telephone}}</td>
+                        <td>{{leparent.email}}</td>
+                        <td>{{leparent.profession}}</td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editLeparent(leparent)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteLeparent(leparent)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="leparentDialog" [style]="{width: '450px'}" header="Détails du Parent" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="nom">Nom</label>
+                    <input type="text" pInputText id="nom" [(ngModel)]="leparent.nom" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !leparent.nom}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !leparent.nom">Le nom est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" pInputText id="prenom" [(ngModel)]="leparent.prenom" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !leparent.prenom}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !leparent.prenom">Le prénom est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="telephone">Téléphone</label>
+                    <input type="text" pInputText id="telephone" [(ngModel)]="leparent.telephone"/>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" pInputText id="email" [(ngModel)]="leparent.email"/>
+                </div>
+                <div class="field">
+                    <label for="adresse">Adresse</label>
+                    <textarea id="adresse" pInputTextarea [(ngModel)]="leparent.adresse" rows="3" cols="20"></textarea>
+                </div>
+                <div class="field">
+                    <label for="profession">Profession</label>
+                    <input type="text" pInputText id="profession" [(ngModel)]="leparent.profession"/>
+                </div>
+                <div class="field">
+                    <label for="etudiant_id">ID Étudiant</label>
+                    <p-inputNumber id="etudiant_id" [(ngModel)]="leparent.etudiant_id" mode="decimal" [showButtons]="true" [min]="1"></p-inputNumber>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveLeparent()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

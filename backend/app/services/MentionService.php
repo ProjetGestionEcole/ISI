@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Mention;
 use Illuminate\Database\Eloquent\Collection;
 
-class MentionService
+class MentionService extends BaseCacheService
 {
     /**
      * Get all mentions.
@@ -14,7 +14,9 @@ class MentionService
      */
     public function getAllMentions(): Collection
     {
-        return Mention::all();
+        return $this->getAllWithCache(function () {
+            return Mention::all();
+        });
     }
 
     /**
@@ -25,7 +27,9 @@ class MentionService
      */
     public function findMentionById(int $id): ?Mention
     {
-        return Mention::find($id);
+        return $this->getItemWithCache($id, function () use ($id) {
+            return Mention::find($id);
+        });
     }
 
     /**
@@ -36,7 +40,9 @@ class MentionService
      */
     public function createMention(array $data): Mention
     {
-        return Mention::create($data);
+        return $this->storeWithCache($data, function ($data) {
+            return Mention::create($data);
+        });
     }
 
     /**
@@ -48,11 +54,14 @@ class MentionService
      */
     public function updateMention(int $id, array $data): ?Mention
     {
-        $mention = $this->findMentionById($id);
-        if ($mention) {
-            $mention->update($data);
-        }
-        return $mention;
+        return $this->updateWithCache($id, $data, function ($id, $data) {
+            $mention = Mention::find($id);
+            if ($mention) {
+                $mention->update($data);
+                return $mention->fresh();
+            }
+            return null;
+        });
     }
 
     /**
@@ -63,10 +72,12 @@ class MentionService
      */
     public function deleteMention(int $id): bool
     {
-        $mention = $this->findMentionById($id);
-        if ($mention) {
-            return $mention->delete();
-        }
-        return false;
+        return $this->deleteWithCache($id, function ($id) {
+            $mention = Mention::find($id);
+            if ($mention) {
+                return $mention->delete();
+            }
+            return false;
+        });
     }
 }

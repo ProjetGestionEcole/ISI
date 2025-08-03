@@ -5,42 +5,48 @@ namespace App\Services;
 use App\Models\Matiere;
 use Illuminate\Database\Eloquent\Collection;
 
-class MatiereService
+class MatiereService extends BaseCacheService
 {
     /**
-     * Get all matieres.
+     * Get all matieres with caching.
      *
      * @return Collection
      */
     public function getAllMatieres(): Collection
     {
-        return Matiere::all();
+        return $this->getAllWithCache(function () {
+            return Matiere::all();
+        });
     }
 
     /**
-     * Find a matiere by ID.
+     * Find a matiere by ID with caching.
      *
      * @param int $id
      * @return Matiere|null
      */
     public function findMatiereById(int $id): ?Matiere
     {
-        return Matiere::find($id);
+        return $this->getItemWithCache($id, function () use ($id) {
+            return Matiere::find($id);
+        });
     }
 
     /**
-     * Create a new matiere.
+     * Create a new matiere with cache invalidation.
      *
      * @param array $data
      * @return Matiere
      */
     public function createMatiere(array $data): Matiere
     {
-        return Matiere::create($data);
+        return $this->storeWithCache($data, function ($data) {
+            return Matiere::create($data);
+        });
     }
 
     /**
-     * Update an existing matiere.
+     * Update an existing matiere with cache invalidation.
      *
      * @param int $id
      * @param array $data
@@ -48,25 +54,30 @@ class MatiereService
      */
     public function updateMatiere(int $id, array $data): ?Matiere
     {
-        $matiere = $this->findMatiereById($id);
-        if ($matiere) {
-            $matiere->update($data);
-        }
-        return $matiere;
+        return $this->updateWithCache($id, $data, function ($id, $data) {
+            $matiere = Matiere::find($id);
+            if ($matiere) {
+                $matiere->update($data);
+                return $matiere->fresh();
+            }
+            return null;
+        });
     }
 
     /**
-     * Delete a matiere by ID.
+     * Delete a matiere by ID with cache invalidation.
      *
      * @param int $id
      * @return bool
      */
     public function deleteMatiere(int $id): bool
     {
-        $matiere = $this->findMatiereById($id);
-        if ($matiere) {
-            return $matiere->delete();
-        }
-        return false;
+        return $this->deleteWithCache($id, function ($id) {
+            $matiere = Matiere::find($id);
+            if ($matiere) {
+                return $matiere->delete();
+            }
+            return false;
+        });
     }
 }

@@ -1,0 +1,86 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedNotes || !selectedNotes.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="notes()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['valeur','type_evaluation']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedNotes" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Notes</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="valeur">Valeur <p-sortIcon field="valeur"></p-sortIcon></th>
+                        <th pSortableColumn="type_evaluation">Type <p-sortIcon field="type_evaluation"></p-sortIcon></th>
+                        <th pSortableColumn="date_evaluation">Date <p-sortIcon field="date_evaluation"></p-sortIcon></th>
+                        <th pSortableColumn="coefficient">Coefficient <p-sortIcon field="coefficient"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-note>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="note"></p-tableCheckbox>
+                        </td>
+                        <td>{{note.id}}</td>
+                        <td>{{note.valeur}}/20</td>
+                        <td>{{note.type_evaluation}}</td>
+                        <td>{{note.date_evaluation | date:'dd/MM/yyyy'}}</td>
+                        <td>{{note.coefficient}}</td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editNote(note)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteNote(note)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="noteDialog" [style]="{width: '450px'}" header="Détails de la Note" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="valeur">Valeur (sur 20)</label>
+                    <p-inputNumber id="valeur" [(ngModel)]="note.valeur" mode="decimal" [showButtons]="true" [min]="0" [max]="20" [step]="0.5"></p-inputNumber>
+                </div>
+                <div class="field">
+                    <label for="type_evaluation">Type d'Évaluation</label>
+                    <input type="text" pInputText id="type_evaluation" [(ngModel)]="note.type_evaluation" placeholder="Ex: Contrôle continu, Examen final"/>
+                </div>
+                <div class="field">
+                    <label for="date_evaluation">Date d'Évaluation</label>
+                    <p-calendar id="date_evaluation" [(ngModel)]="note.date_evaluation" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="field">
+                    <label for="coefficient">Coefficient</label>
+                    <p-inputNumber id="coefficient" [(ngModel)]="note.coefficient" mode="decimal" [showButtons]="true" [min]="0.5" [max]="5" [step]="0.5"></p-inputNumber>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveNote()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

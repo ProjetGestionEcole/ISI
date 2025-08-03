@@ -1,0 +1,98 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedInscriptions || !selectedInscriptions.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="inscriptions()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['etudiant_id','classe_id','statut']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedInscriptions" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Inscriptions</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="etudiant_id">Étudiant ID <p-sortIcon field="etudiant_id"></p-sortIcon></th>
+                        <th pSortableColumn="classe_id">Classe ID <p-sortIcon field="classe_id"></p-sortIcon></th>
+                        <th pSortableColumn="date_inscription">Date <p-sortIcon field="date_inscription"></p-sortIcon></th>
+                        <th pSortableColumn="statut">Statut <p-sortIcon field="statut"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-inscription>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="inscription"></p-tableCheckbox>
+                        </td>
+                        <td>{{inscription.id}}</td>
+                        <td>{{inscription.etudiant_id}}</td>
+                        <td>{{inscription.classe_id}}</td>
+                        <td>{{inscription.date_inscription | date:'dd/MM/yyyy'}}</td>
+                        <td>
+                            <span class="p-tag" [ngClass]="{
+                                'p-tag-success': inscription.statut === 'Validée',
+                                'p-tag-warning': inscription.statut === 'En cours',
+                                'p-tag-danger': inscription.statut === 'Annulée'
+                            }">{{inscription.statut}}</span>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editInscription(inscription)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteInscription(inscription)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="inscriptionDialog" [style]="{width: '450px'}" header="Détails de l'Inscription" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="etudiant_id">ID Étudiant</label>
+                    <p-inputNumber id="etudiant_id" [(ngModel)]="inscription.etudiant_id" mode="decimal" [showButtons]="true" [min]="1" required [ngClass]="{'ng-invalid ng-dirty' : submitted && inscription.etudiant_id <= 0}"></p-inputNumber>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && inscription.etudiant_id <= 0">L'ID étudiant est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="classe_id">ID Classe</label>
+                    <p-inputNumber id="classe_id" [(ngModel)]="inscription.classe_id" mode="decimal" [showButtons]="true" [min]="1" required [ngClass]="{'ng-invalid ng-dirty' : submitted && inscription.classe_id <= 0}"></p-inputNumber>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && inscription.classe_id <= 0">L'ID classe est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="annee_scolaire_id">ID Année Scolaire</label>
+                    <p-inputNumber id="annee_scolaire_id" [(ngModel)]="inscription.annee_scolaire_id" mode="decimal" [showButtons]="true" [min]="1"></p-inputNumber>
+                </div>
+                <div class="field">
+                    <label for="date_inscription">Date d'Inscription</label>
+                    <p-calendar id="date_inscription" [(ngModel)]="inscription.date_inscription" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="field">
+                    <label for="statut">Statut</label>
+                    <input type="text" pInputText id="statut" [(ngModel)]="inscription.statut" placeholder="En cours, Validée, Annulée"/>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveInscription()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

@@ -5,42 +5,48 @@ namespace App\Services;
 use App\Models\Classe;
 use Illuminate\Database\Eloquent\Collection;
 
-class ClasseService
+class ClasseService extends BaseCacheService
 {
     /**
-     * Get all classes.
+     * Get all classes with caching.
      *
      * @return Collection
      */
     public function getAllClasses(): Collection
     {
-        return Classe::all();
+        return $this->getAllWithCache(function () {
+            return Classe::all();
+        });
     }
 
     /**
-     * Find a classe by ID.
+     * Find a classe by ID with caching.
      *
      * @param int $id
      * @return Classe|null
      */
     public function findClasseById(int $id): ?Classe
     {
-        return Classe::find($id);
+        return $this->getItemWithCache($id, function () use ($id) {
+            return Classe::find($id);
+        });
     }
 
     /**
-     * Create a new classe.
+     * Create a new classe with cache invalidation.
      *
      * @param array $data
      * @return Classe
      */
     public function createClasse(array $data): Classe
     {
-        return Classe::create($data);
+        return $this->storeWithCache($data, function ($data) {
+            return Classe::create($data);
+        });
     }
 
     /**
-     * Update an existing classe.
+     * Update an existing classe with cache invalidation.
      *
      * @param int $id
      * @param array $data
@@ -48,25 +54,30 @@ class ClasseService
      */
     public function updateClasse(int $id, array $data): ?Classe
     {
-        $classe = $this->findClasseById($id);
-        if ($classe) {
-            $classe->update($data);
-        }
-        return $classe;
+        return $this->updateWithCache($id, $data, function ($id, $data) {
+            $classe = Classe::find($id);
+            if ($classe) {
+                $classe->update($data);
+                return $classe->fresh();
+            }
+            return null;
+        });
     }
 
     /**
-     * Delete a classe by ID.
+     * Delete a classe by ID with cache invalidation.
      *
      * @param int $id
      * @return bool
      */
     public function deleteClasse(int $id): bool
     {
-        $classe = $this->findClasseById($id);
-        if ($classe) {
-            return $classe->delete();
-        }
-        return false;
+        return $this->deleteWithCache($id, function ($id) {
+            $classe = Classe::find($id);
+            if ($classe) {
+                return $classe->delete();
+            }
+            return false;
+        });
     }
 }
