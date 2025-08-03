@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '../service/layout.service';
+import { AuthService, User } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-topbar',
@@ -73,21 +75,54 @@ import { LayoutService } from '../service/layout.service';
                         <i class="pi pi-inbox"></i>
                         <span>Messages</span>
                     </button>
-                    <button type="button" class="layout-topbar-action">
+                    <button type="button" class="layout-topbar-action" *ngIf="currentUser">
                         <i class="pi pi-user"></i>
-                        <span>Profile</span>
+                        <span>{{ currentUser.name }}</span>
+                    </button>
+                    <button type="button" class="layout-topbar-action" (click)="logout()">
+                        <i class="pi pi-sign-out"></i>
+                        <span>Déconnexion</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>`
 })
-export class AppTopbar {
+export class AppTopbar implements OnInit, OnDestroy {
     items!: MenuItem[];
+    currentUser: User | null = null;
+    private userSubscription: Subscription = new Subscription();
 
-    constructor(public layoutService: LayoutService) {}
+    constructor(
+        public layoutService: LayoutService,
+        private authService: AuthService
+    ) {}
+
+    ngOnInit() {
+        this.userSubscription = this.authService.currentUser$.subscribe(user => {
+            this.currentUser = user;
+        });
+    }
+
+    ngOnDestroy() {
+        this.userSubscription.unsubscribe();
+    }
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
+    }
+
+    logout() {
+        this.authService.logout().subscribe({
+            next: () => {
+                // Logout handled by the service (redirects to login)
+            },
+            error: (error) => {
+                console.error('Logout error:', error);
+                // Force logout even if API call fails
+                this.authService['clearAuthData']();
+                window.location.href = '/login';
+            }
+        });
     }
 }
