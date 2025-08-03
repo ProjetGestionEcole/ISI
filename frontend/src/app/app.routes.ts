@@ -2,12 +2,29 @@ import { Routes } from '@angular/router';
 import { AppLayout } from './layouts/app-layout/app-layout'; // ← bon chemin ici
 import { Crud } from './layouts/pages/crud/crud';
 import { Specialites } from './layouts/pages/specialites/specialites';
+import { AuthGuard } from './guards/auth.guard';
+import { GuestGuard } from './guards/guest.guard';
 
 export const appRoutes: Routes = [
+    // Authentication routes (guest only)
+    {
+        path: 'login',
+        loadComponent: () => import('./layouts/pages/login/login').then(m => m.Login),
+        canActivate: [GuestGuard]
+    },
+    {
+        path: 'register',
+        loadComponent: () => import('./layouts/pages/register/register').then(m => m.RegisterComponent),
+        canActivate: [GuestGuard]
+    },
+    
+    // Protected dashboard routes (authenticated users only)
     {
         path: 'dashboard',
         component: AppLayout,
+        canActivate: [AuthGuard],
         children: [
+            { path: '', redirectTo: 'crud', pathMatch: 'full' },
             { path: 'crud', component: Crud},
             { path: 'specialite', component: Specialites},
             { path: 'niveau', loadComponent: () => import('./layouts/pages/niveaux/niveaux').then(m => m.Niveaux) },
@@ -24,5 +41,10 @@ export const appRoutes: Routes = [
             { path: 'leparent', loadComponent: () => import('./layouts/pages/leparents/leparents').then(m => m.Leparents) },
         ]
     },
-    { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+    
+    // Default redirect
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    
+    // Wildcard route for 404 page
+    { path: '**', redirectTo: '/login' }
 ];

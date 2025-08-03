@@ -21,26 +21,96 @@
                                     />
                                 </g>
                             </svg>
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
-                            <span class="text-muted-color font-medium">Sign in to continue</span>
+                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Portail Scolaire</div>
+                            <span class="text-muted-color font-medium">Connectez-vous pour continuer</span>
                         </div>
 
-                        <div>
-                            <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                            <input pInputText id="email1" type="text" placeholder="Email address" class="w-full md:w-120 mb-8" [(ngModel)]="email" />
+                        <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+                            <!-- Messages d'erreur et de succès -->
+                            <div *ngIf="errorMessage" class="mb-4">
+                                <p-message severity="error" [text]="errorMessage"></p-message>
+                            </div>
+                            <div *ngIf="successMessage" class="mb-4">
+                                <p-message severity="success" [text]="successMessage"></p-message>
+                            </div>
 
-                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                            <p-password id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+                            <!-- Champ Email -->
+                            <div class="mb-6">
+                                <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
+                                <input 
+                                    pInputText 
+                                    id="email1" 
+                                    type="email" 
+                                    placeholder="Votre adresse email" 
+                                    class="w-full md:w-120" 
+                                    [(ngModel)]="email" 
+                                    name="email"
+                                    required
+                                    email
+                                    [disabled]="isLoading"
+                                    #emailInput="ngModel"
+                                />
+                                <small *ngIf="emailInput.invalid && emailInput.touched" class="text-red-500">
+                                    Veuillez entrer une adresse email valide
+                                </small>
+                            </div>
 
+                            <!-- Champ Mot de passe -->
+                            <div class="mb-6">
+                                <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Mot de passe</label>
+                                <p-password 
+                                    id="password1" 
+                                    [(ngModel)]="password" 
+                                    placeholder="Votre mot de passe" 
+                                    [toggleMask]="true" 
+                                    [fluid]="true" 
+                                    [feedback]="false"
+                                    name="password"
+                                    required
+                                    [disabled]="isLoading"
+                                    #passwordInput="ngModel"
+                                ></p-password>
+                                <small *ngIf="passwordInput.invalid && passwordInput.touched" class="text-red-500">
+                                    Le mot de passe est requis
+                                </small>
+                            </div>
+
+                            <!-- Options et liens -->
                             <div class="flex items-center justify-between mt-2 mb-8 gap-8">
                                 <div class="flex items-center">
-                                    <p-checkbox [(ngModel)]="checked" id="rememberme1" binary class="mr-2"></p-checkbox>
-                                    <label for="rememberme1">Remember me</label>
+                                    <p-checkbox [(ngModel)]="checked" id="rememberme1" binary class="mr-2" name="remember"></p-checkbox>
+                                    <label for="rememberme1">Se souvenir de moi</label>
                                 </div>
-                                <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
+                                <span 
+                                    class="font-medium no-underline ml-2 text-right cursor-pointer text-primary hover:underline"
+                                    (click)="goToForgotPassword()"
+                                >
+                                    Mot de passe oublié ?
+                                </span>
                             </div>
-                            <p-button label="Sign In" styleClass="w-full" routerLink="/"></p-button>
-                        </div>
+
+                            <!-- Bouton de connexion -->
+                            <div class="mb-4">
+                                <p-button 
+                                    type="submit"
+                                    label="Se connecter" 
+                                    styleClass="w-full"
+                                    [disabled]="isLoading || loginForm.invalid"
+                                    [loading]="isLoading"
+                                ></p-button>
+                            </div>
+
+                            <!-- Lien vers l'inscription -->
+                            <div class="text-center">
+                                <span class="text-muted-color">Pas encore de compte ? </span>
+                                <span 
+                                    class="font-medium cursor-pointer text-primary hover:underline"
+                                    (click)="goToRegister()"
+                                >
+                                    S'inscrire
+                                </span>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,173 @@
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="flex flex-column align-items-center justify-content-center">
+        <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+                <div class="text-center mb-5">
+                    <div class="text-900 text-3xl font-medium mb-3">Créer un compte</div>
+                    <span class="text-600 font-medium">Inscrivez-vous pour accéder au portail</span>
+                </div>
+
+                <!-- Success Message -->
+                <div *ngIf="successMessage" class="mb-4">
+                    <p-message severity="success" [text]="successMessage"></p-message>
+                </div>
+
+                <!-- Error Message -->
+                <div *ngIf="errorMessage" class="mb-4">
+                    <p-message severity="error" [text]="errorMessage"></p-message>
+                </div>
+
+                <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+                    <div class="mb-4">
+                        <label for="name" class="block text-900 text-xl font-medium mb-2">Nom complet</label>
+                        <input 
+                            pInputText 
+                            id="name" 
+                            name="name"
+                            type="text" 
+                            placeholder="Entrez votre nom complet" 
+                            class="w-full md:w-30rem" 
+                            style="padding:1rem"
+                            [(ngModel)]="name"
+                            [disabled]="isLoading"
+                            required
+                            #nameField="ngModel"
+                            [class.ng-invalid]="hasFieldError('name') || (nameField.invalid && nameField.touched)"
+                        />
+                        <!-- Validation errors for name -->
+                        <small 
+                            *ngIf="hasFieldError('name')" 
+                            class="p-error block mt-1"
+                        >
+                            {{ getFieldError('name') }}
+                        </small>
+                        <small 
+                            *ngIf="!hasFieldError('name') && nameField.invalid && nameField.touched" 
+                            class="p-error block mt-1"
+                        >
+                            Le nom est obligatoire.
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="email" class="block text-900 text-xl font-medium mb-2">Email</label>
+                        <input 
+                            pInputText 
+                            id="email" 
+                            name="email"
+                            type="email" 
+                            placeholder="Entrez votre adresse email" 
+                            class="w-full md:w-30rem" 
+                            style="padding:1rem"
+                            [(ngModel)]="email"
+                            [disabled]="isLoading"
+                            required
+                            email
+                            #emailField="ngModel"
+                            [class.ng-invalid]="hasFieldError('email') || (emailField.invalid && emailField.touched)"
+                        />
+                        <!-- Validation errors for email -->
+                        <small 
+                            *ngIf="hasFieldError('email')" 
+                            class="p-error block mt-1"
+                        >
+                            {{ getFieldError('email') }}
+                        </small>
+                        <small 
+                            *ngIf="!hasFieldError('email') && emailField.invalid && emailField.touched" 
+                            class="p-error block mt-1"
+                        >
+                            <span *ngIf="emailField.errors?.['required']">L'email est obligatoire.</span>
+                            <span *ngIf="emailField.errors?.['email']">Format d'email invalide.</span>
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="block text-900 text-xl font-medium mb-2">Mot de passe</label>
+                        <p-password 
+                            id="password"
+                            name="password"
+                            [(ngModel)]="password" 
+                            placeholder="Entrez votre mot de passe"
+                            [toggleMask]="true"
+                            class="w-full"
+                            inputStyleClass="w-full"
+                            styleClass="w-full md:w-30rem"
+                            [disabled]="isLoading"
+                            required
+                            #passwordField="ngModel"
+                            [class.ng-invalid]="hasFieldError('password') || (passwordField.invalid && passwordField.touched)"
+                        ></p-password>
+                        <!-- Validation errors for password -->
+                        <small 
+                            *ngIf="hasFieldError('password')" 
+                            class="p-error block mt-1"
+                        >
+                            {{ getFieldError('password') }}
+                        </small>
+                        <small 
+                            *ngIf="!hasFieldError('password') && passwordField.invalid && passwordField.touched" 
+                            class="p-error block mt-1"
+                        >
+                            Le mot de passe est obligatoire.
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password_confirmation" class="block text-900 text-xl font-medium mb-2">Confirmer le mot de passe</label>
+                        <p-password 
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            [(ngModel)]="password_confirmation" 
+                            placeholder="Confirmez votre mot de passe"
+                            [toggleMask]="true"
+                            class="w-full"
+                            inputStyleClass="w-full"
+                            styleClass="w-full md:w-30rem"
+                            [disabled]="isLoading"
+                            required
+                            #passwordConfirmField="ngModel"
+                            [class.ng-invalid]="hasFieldError('password_confirmation') || (passwordConfirmField.invalid && passwordConfirmField.touched)"
+                        ></p-password>
+                        <!-- Validation errors for password confirmation -->
+                        <small 
+                            *ngIf="hasFieldError('password_confirmation')" 
+                            class="p-error block mt-1"
+                        >
+                            {{ getFieldError('password_confirmation') }}
+                        </small>
+                        <small 
+                            *ngIf="!hasFieldError('password_confirmation') && passwordConfirmField.invalid && passwordConfirmField.touched" 
+                            class="p-error block mt-1"
+                        >
+                            La confirmation du mot de passe est obligatoire.
+                        </small>
+                        <small 
+                            *ngIf="password && password_confirmation && password !== password_confirmation" 
+                            class="p-error block mt-1"
+                        >
+                            Les mots de passe ne correspondent pas.
+                        </small>
+                    </div>
+
+                    <button 
+                        pButton 
+                        pRipple 
+                        type="submit"
+                        label="S'inscrire" 
+                        class="w-full p-3 text-xl"
+                        [disabled]="isLoading || registerForm.invalid"
+                        [loading]="isLoading"
+                    ></button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <span class="text-600 font-medium">Vous avez déjà un compte? </span>
+                    <a routerLink="/login" class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color);">
+                        Se connecter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
