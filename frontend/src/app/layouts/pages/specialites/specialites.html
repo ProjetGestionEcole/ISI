@@ -1,0 +1,96 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedSpecialite()" [disabled]="!selectedSpecialites || !selectedSpecialites.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="specialites"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'code_specialite']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedSpecialites"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} spécialités"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Gérer les spécialités</h5>
+            <p-inputGroup>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-search"></i>
+                </span>
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." />
+            </p-inputGroup>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem"><p-tableHeaderCheckbox /></th>
+            <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+            <th pSortableColumn="name">Nom <p-sortIcon field="name" /></th>
+            <th pSortableColumn="code_specialite">Code Spécialité <p-sortIcon field="code_specialite" /></th>
+            <th pSortableColumn="duree">Durée <p-sortIcon field="duree" /></th>
+            <th>Actions</th>
+        </tr>
+    </ng-template>
+
+    <ng-template #body let-specialite>
+        <tr>
+            <td><p-tableCheckbox [value]="specialite" /></td>
+            <td>{{ specialite.id }}</td>
+            <td>{{ specialite.name }}</td>
+            <td>{{ specialite.code_specialite }}</td>
+            <td>{{ specialite.duree }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editSpecialite(specialite)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteSpecialite(specialite)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- Dialog : Création / Édition -->
+<p-dialog [(visible)]="specialiteDialog" [style]="{ width: '450px' }" header="Détails de la spécialité" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="name" class="block font-bold mb-2">Nom</label>
+                <input type="text" pInputText id="name" [(ngModel)]="specialite.name" required autofocus />
+                <small class="text-red-500" *ngIf="submitted && !specialite.name">Le nom est requis.</small>
+            </div>
+
+            <div>
+                <label for="code_specialite" class="block font-bold mb-2">Code Spécialité</label>
+                <input type="text" pInputText id="code_specialite" [(ngModel)]="specialite.code_specialite" required />
+                <small class="text-red-500" *ngIf="submitted && !specialite.code_specialite">Le code est requis.</small>
+            </div>
+
+            <div>
+                <label for="duree" class="block font-bold mb-2">Durée (en années)</label>
+                <p-inputNumber [(ngModel)]="specialite.duree" inputId="duree" [min]="1" required></p-inputNumber>
+                <small class="text-red-500" *ngIf="submitted && (!specialite.duree || specialite.duree < 1)">La durée est requise et doit être au moins 1.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Annuler" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Enregistrer" icon="pi pi-check" (click)="saveSpecialite()" />
+    </ng-template>
+</p-dialog>
+
+<!-- Boîte de confirmation -->
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

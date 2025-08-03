@@ -33,9 +33,9 @@ class SpecialiteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $specialites =  $this->specialitesService->store($request->validated());
+        return response()->json($specialites,201);
     }
-
     /**
      * Display the specified resource.
      */
