@@ -9,34 +9,38 @@ class EnseignementSeeder extends Seeder
 {
     public function run(): void
     {
-        $matieres = DB::table('matieres')->pluck('code_matiere')->toArray();
-        $classes = DB::table('classes')->pluck('code_classe')->toArray();
+        $matieres = DB::table('matieres')->get();
         $profs = DB::table('users')->where('role', 'Prof')->pluck('id')->toArray();
 
-        if (count($matieres) < 1 || count($classes) < 1 || count($profs) < 1) {
-            $this->command->error('Tables vides. Ajoutez des profs, matières, classes.');
+        if ($matieres->isEmpty() || count($profs) < 1) {
+            $this->command->error('Tables vides. Ajoutez des profs et matières.');
             return;
         }
 
-        $matieres = array_slice($matieres, 0, 5);
-        $classes = array_slice($classes, 0, 5);
-
-        foreach ($classes as $classe) {
-            foreach ($matieres as $matiere) {
+        $enseignementCount = 0;
+        
+        // Create enseignements for each matiere with a random prof
+        foreach ($matieres as $matiere) {
+            $codeEnseignement = 'ENS_' . $matiere->code_matiere;
+            
+            try {
                 DB::table('enseignements')->updateOrInsert(
                     [
-                        'code_classe' => $classe,
-                        'code_matiere' => $matiere,
+                        'code_enseignement' => $codeEnseignement,
                     ],
                     [
+                        'code_matiere' => $matiere->code_matiere,
                         'code_prof' => $profs[array_rand($profs)],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]
                 );
+                $enseignementCount++;
+            } catch (\Exception $e) {
+                echo "Error creating enseignement for {$matiere->code_matiere}: " . $e->getMessage() . "\n";
             }
         }
 
-        $this->command->info("Enseignements (5 classes × 5 matières) créés.");
+        $this->command->info("$enseignementCount enseignements créés (1 par matière).");
     }
 }

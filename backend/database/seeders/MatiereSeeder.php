@@ -28,11 +28,16 @@ class MatiereSeeder extends Seeder
 
         $ues = DB::table('ues')->get();
 
-        foreach ($ues as $ue) {
-            // Supprimer le préfixe "UE-" pour le code matière
-            $suffix = str_replace('UE-', '', $ue->code_ue);
+        if ($ues->isEmpty()) {
+            echo "Warning: No UEs found. Please run UeSeeder first.\n";
+            return;
+        }
 
-            // Nombre de matières entre 2 et 4 pour chaque UE
+        foreach ($ues as $ue) {
+            // Create code matière based on UE code
+            $suffix = str_replace(['UE-', '_UE'], '', $ue->code_ue);
+
+            // Nombre de matières entre 2 et 4 pour chaque UE (as specified)
             $nbMatieres = rand(2, 4);
 
             // Prendre des matières aléatoires sans doublons
@@ -40,16 +45,20 @@ class MatiereSeeder extends Seeder
 
             $i = 1;
             foreach ($matieres as $matiereNom) {
-                DB::table('matieres')->updateOrInsert(
-                    ['code_matiere' => 'MAT-' . $suffix . '-' . $i],
-                    [
-                        'name' => $matiereNom,
-                        'code_ue' => $ue->code_ue,
-                        'coef' => rand(1, 4),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]
-                );
+                try {
+                    DB::table('matieres')->updateOrInsert(
+                        ['code_matiere' => 'MAT-' . $suffix . '-' . $i],
+                        [
+                            'name' => $matiereNom,
+                            'code_ue' => $ue->code_ue,
+                            'coef' => rand(1, 4),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]
+                    );
+                } catch (\Exception $e) {
+                    echo "Error creating Matiere MAT-{$suffix}-{$i}: " . $e->getMessage() . "\n";
+                }
                 $i++;
             }
         }

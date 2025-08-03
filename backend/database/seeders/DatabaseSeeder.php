@@ -29,11 +29,18 @@ class DatabaseSeeder extends Seeder
 
         // Ensuite les enfants (UE, matières, etc)
         $this->call([
-            // Ajoute d'autres seeders si nécessaire
+            // First create classes and semesters
             ClasseSeeder::class,
             SemestreSeeder::class,
+            
+            // Then link classes to semesters (each class gets 2 semesters)
+            ClasseSemestreSeeder::class,
+            
+            // Then create UEs and Matieres (4-5 UEs per semester, 2-4 Matieres per UE)
             UeSeeder::class,
             MatiereSeeder::class,
+            
+            // Finally create associations and data
             InscriptionSeeder::class,
             EnseignementSeeder::class,
             NoteSeeder::class,
