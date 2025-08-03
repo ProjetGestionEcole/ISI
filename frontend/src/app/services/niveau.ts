@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class NiveauService extends BaseService<Niveau> {
   protected resourceName = 'niveaux';
+  protected primaryKey = 'id';
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class NoteService extends BaseService<Note> {
   protected resourceName = 'notes';
+  protected primaryKey = 'id'; // Note uses numeric id
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

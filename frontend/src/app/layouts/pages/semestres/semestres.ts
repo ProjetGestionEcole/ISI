@@ -68,11 +68,14 @@ export class Semestres implements OnInit {
   openNew() {
     this.semestre = {
       id: 0,
+      code_semestre: '',
       name: '',
       numero: 1,
+      niveau_id: 0,
+      specialite_id: 0,
+      annee_scolaire_id: 0,
       date_debut: '',
-      date_fin: '',
-      annee_scolaire_id: 0
+      date_fin: ''
     };
     this.submitted = false;
     this.semestreDialog = true;
@@ -151,9 +154,10 @@ export class Semestres implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.semestreServices.destroy(semestre.id).subscribe({
-          next: () => {
-            this.semestres.set(this.semestres().filter((val) => val.id !== semestre.id));
+        if (semestre.id) {
+          this.semestreServices.destroy(semestre.id).subscribe({
+            next: () => {
+              this.semestres.set(this.semestres().filter((val) => val.id !== semestre.id));
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',
@@ -171,6 +175,7 @@ export class Semestres implements OnInit {
             });
           }
         });
+        }
       }
     });
   }

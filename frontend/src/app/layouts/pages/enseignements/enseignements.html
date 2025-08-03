@@ -61,13 +61,13 @@
             <ng-template pTemplate="content">
                 <div class="field">
                     <label for="enseignant_id">ID Enseignant</label>
-                    <p-inputNumber id="enseignant_id" [(ngModel)]="enseignement.enseignant_id" mode="decimal" [showButtons]="true" [min]="1" required [ngClass]="{'ng-invalid ng-dirty' : submitted && enseignement.enseignant_id <= 0}"></p-inputNumber>
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && enseignement.enseignant_id <= 0">L'ID enseignant est requis.</small>
+                    <p-inputNumber id="enseignant_id" [(ngModel)]="enseignement.enseignant_id" mode="decimal" [showButtons]="true" [min]="1" required [ngClass]="{'ng-invalid ng-dirty' : submitted && (!enseignement.enseignant_id || enseignement.enseignant_id <= 0)}"></p-inputNumber>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && (!enseignement.enseignant_id || enseignement.enseignant_id <= 0)">L'ID enseignant est requis.</small>
                 </div>
                 <div class="field">
                     <label for="matiere_id">ID Matière</label>
-                    <p-inputNumber id="matiere_id" [(ngModel)]="enseignement.matiere_id" mode="decimal" [showButtons]="true" [min]="1" required [ngClass]="{'ng-invalid ng-dirty' : submitted && enseignement.matiere_id <= 0}"></p-inputNumber>
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && enseignement.matiere_id <= 0">L'ID matière est requis.</small>
+                    <p-inputNumber id="matiere_id" [(ngModel)]="enseignement.matiere_id" mode="decimal" [showButtons]="true" [min]="1" required [ngClass]="{'ng-invalid ng-dirty' : submitted && (!enseignement.matiere_id || enseignement.matiere_id <= 0)}"></p-inputNumber>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && (!enseignement.matiere_id || enseignement.matiere_id <= 0)">L'ID matière est requis.</small>
                 </div>
                 <div class="field">
                     <label for="classe_id">ID Classe</label>

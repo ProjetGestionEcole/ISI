@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class MatiereService extends BaseService<Matiere> {
   protected resourceName = 'matieres';
+  protected primaryKey = 'code_matiere'; // Matiere uses string primary key
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

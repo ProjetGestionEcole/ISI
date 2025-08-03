@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class InscriptionService extends BaseService<Inscription> {
   protected resourceName = 'inscriptions';
+  protected primaryKey = 'id';
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

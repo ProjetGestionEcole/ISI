@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class LeparentService extends BaseService<Leparent> {
   protected resourceName = 'leparents';
+  protected primaryKey = 'id';
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

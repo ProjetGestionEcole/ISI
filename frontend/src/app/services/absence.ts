@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class AbsenceService extends BaseService<Absence> {
   protected resourceName = 'absences';
+  protected primaryKey = 'id';
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

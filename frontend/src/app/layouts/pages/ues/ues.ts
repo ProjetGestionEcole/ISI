@@ -71,7 +71,7 @@ export class Ues implements OnInit {
       name: '',
       code_ue: '',
       credits: 0,
-      semestre_id: 0,
+      code_semestre: '',
       description: ''
     };
     this.submitted = false;
@@ -151,9 +151,10 @@ export class Ues implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.ueServices.destroy(ue.id).subscribe({
-          next: () => {
-            this.ues.set(this.ues().filter((val) => val.id !== ue.id));
+        if (ue.id) {
+          this.ueServices.destroy(ue.id).subscribe({
+            next: () => {
+              this.ues.set(this.ues().filter((val) => val.id !== ue.id));
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',
@@ -171,6 +172,7 @@ export class Ues implements OnInit {
             });
           }
         });
+        }
       }
     });
   }
