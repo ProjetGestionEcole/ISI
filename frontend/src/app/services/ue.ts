@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class UeService extends BaseService<Ue> {
   protected resourceName = 'ues';
+  protected primaryKey = 'code_ue'; // UE uses string primary key
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

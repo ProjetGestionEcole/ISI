@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class SpecialiteService extends BaseService<Specialite> {
   protected resourceName = 'specialites';
+  protected primaryKey = 'id'; // Specialite uses numeric id
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

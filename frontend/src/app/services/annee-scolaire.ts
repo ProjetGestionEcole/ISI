@@ -7,7 +7,8 @@ import { BaseService } from './base.service';
   providedIn: 'root'
 })
 export class AnneeScolaireService extends BaseService<AnneeScolaire> {
-  protected resourceName = 'annee-scolaires';
+  protected resourceName = 'anneescolaires';
+  protected primaryKey = 'id';
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

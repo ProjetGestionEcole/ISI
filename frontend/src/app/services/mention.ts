@@ -8,6 +8,7 @@ import { BaseService } from './base.service';
 })
 export class MentionService extends BaseService<Mention> {
   protected resourceName = 'mentions';
+  protected primaryKey = 'id';
 
   constructor(httpclient: HttpClient) {
     super(httpclient);

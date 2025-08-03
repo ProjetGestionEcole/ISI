@@ -12,8 +12,9 @@ export interface CacheConfig {
 @Injectable({
   providedIn: 'root'
 })
-export abstract class BaseService<T extends { id: number }> {
+export abstract class BaseService<T extends { [key: string]: any }> {
   protected abstract resourceName: string;
+  protected abstract primaryKey: string; // Define which field is the primary key
   protected url: string;
   
   // Cache implementation
@@ -48,7 +49,7 @@ export abstract class BaseService<T extends { id: number }> {
   /**
    * Get cache key for single item
    */
-  private getItemCacheKey(id: number): string {
+  private getItemCacheKey(id: string | number): string {
     return `${this.resourceName || 'unknown'}_${id}`;
   }
 
@@ -102,7 +103,7 @@ export abstract class BaseService<T extends { id: number }> {
   /**
    * Clear specific item cache
    */
-  private clearItemCache(id: number): void {
+  private clearItemCache(id: string | number): void {
     this.cache.delete(this.getItemCacheKey(id));
     this.cache.delete(this.getAllCacheKey());
   }
@@ -136,7 +137,7 @@ export abstract class BaseService<T extends { id: number }> {
   /**
    * Get single item by ID with caching
    */
-  getById(id: number): Observable<T> {
+  getById(id: string | number): Observable<T> {
     const cacheKey = this.getItemCacheKey(id);
     
     // Check cache first
@@ -178,12 +179,13 @@ export abstract class BaseService<T extends { id: number }> {
    * Update existing item
    */
   update(item: T): Observable<T> {
-    return this.httpclient.put<T>(`${this.url}/${item.id}`, item).pipe(
+    const itemId = item[this.primaryKey];
+    return this.httpclient.put<T>(`${this.url}/${itemId}`, item).pipe(
       tap(updatedItem => {
-        this.clearItemCache(item.id);
+        this.clearItemCache(itemId);
         // Update the items subject
         const currentItems = this.itemsSubject.value;
-        const index = currentItems.findIndex(i => i.id === item.id);
+        const index = currentItems.findIndex(i => i[this.primaryKey] === itemId);
         if (index !== -1) {
           currentItems[index] = updatedItem;
           this.itemsSubject.next([...currentItems]);
@@ -199,13 +201,13 @@ export abstract class BaseService<T extends { id: number }> {
   /**
    * Delete item
    */
-  destroy(id: number): Observable<any> {
+  destroy(id: string | number): Observable<any> {
     return this.httpclient.delete(`${this.url}/${id}`).pipe(
       tap(() => {
         this.clearItemCache(id);
         // Update the items subject
         const currentItems = this.itemsSubject.value;
-        this.itemsSubject.next(currentItems.filter(item => item.id !== id));
+        this.itemsSubject.next(currentItems.filter(item => item[this.primaryKey] !== id));
       }),
       catchError(error => {
         console.error(`Error deleting ${this.resourceName}:`, error);

@@ -104,6 +104,8 @@ export class Matieres implements OnInit {
       id: 0,
       name: '',
       code_matiere: '',
+      code_ue: '',
+      coef: 1,
       coefficient: 1,
       description: ''
     };
@@ -126,8 +128,8 @@ export class Matieres implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        const deletePromises = this.selectedMatieres!.map(matiere => 
-          this.matiereServices.destroy(matiere.id)
+        const deletePromises = this.selectedMatieres!.filter(matiere => matiere.id).map(matiere => 
+          this.matiereServices.destroy(matiere.id!)
         );
 
         Promise.all(deletePromises).then(
@@ -162,6 +164,8 @@ export class Matieres implements OnInit {
       id: 0,
       name: '',
       code_matiere: '',
+      code_ue: '',
+      coef: 1,
       coefficient: 1,
       description: ''
     };
@@ -173,9 +177,10 @@ export class Matieres implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.matiereServices.destroy(matiere.id).subscribe({
-          next: () => {
-            this.matieres.set(this.matieres().filter((val) => val.id !== matiere.id));
+        if (matiere.id) {
+          this.matiereServices.destroy(matiere.id).subscribe({
+            next: () => {
+              this.matieres.set(this.matieres().filter((val) => val.id !== matiere.id));
             this.selectedMatieres = [];
             this.messageService.add({
               severity: 'success',
@@ -194,6 +199,7 @@ export class Matieres implements OnInit {
             });
           }
         });
+        }
       }
     });
   }

@@ -68,11 +68,13 @@ export class Enseignements implements OnInit {
   openNew() {
     this.enseignement = {
       id: 0,
+      code_enseignement: '',
+      code_matiere: '',
+      code_prof: 0,
       professeur_id: 0,
       enseignant_id: 0,
       matiere_id: 0,
       classe_id: 0,
-      semestre_id: 0,
       annee_scolaire_id: 0,
       coefficient: 0,
       volume_horaire: 0
@@ -93,7 +95,7 @@ export class Enseignements implements OnInit {
 
   saveEnseignement() {
     this.submitted = true;
-    if (this.enseignement.professeur_id > 0 && this.enseignement.matiere_id > 0) {
+    if (this.enseignement.professeur_id && this.enseignement.professeur_id > 0 && this.enseignement.matiere_id && this.enseignement.matiere_id > 0) {
       if (this.enseignement.id && this.enseignement.id > 0) {
         this.enseignementServices.updateOffre(this.enseignement).subscribe({
           next: (updatedEnseignement) => {
@@ -154,9 +156,10 @@ export class Enseignements implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.enseignementServices.destroy(enseignement.id).subscribe({
-          next: () => {
-            this.enseignements.set(this.enseignements().filter((val) => val.id !== enseignement.id));
+        if (enseignement.id) {
+          this.enseignementServices.destroy(enseignement.id).subscribe({
+            next: () => {
+              this.enseignements.set(this.enseignements().filter((val) => val.id !== enseignement.id));
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',
@@ -174,6 +177,7 @@ export class Enseignements implements OnInit {
             });
           }
         });
+        }
       }
     });
   }

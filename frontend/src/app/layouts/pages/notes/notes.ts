@@ -70,6 +70,8 @@ export class Notes implements OnInit {
   openNew() {
     this.note = {
       id: 0,
+      code_enseignement: '',
+      id_etudiant: 0,
       valeur: 0,
       type_evaluation: '',
       date_evaluation: '',
@@ -77,8 +79,7 @@ export class Notes implements OnInit {
       mcc: 0,
       examen: 0,
       code_matiere: '',
-      id_enseignant: 0,
-      id_etudiant: 0
+      id_enseignant: 0
     };
     this.submitted = false;
     this.noteDialog = true;
