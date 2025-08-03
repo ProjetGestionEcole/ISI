@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Specialite } from '../models/specialite';
+import { Ue } from '../models/ue';
 import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SpecialiteService extends BaseService<Specialite> {
-  protected resourceName = 'specialites';
+export class UeService extends BaseService<Ue> {
+  protected resourceName = 'ues';
 
   constructor(httpclient: HttpClient) {
     super(httpclient);
@@ -19,8 +19,7 @@ export class SpecialiteService extends BaseService<Specialite> {
     return this.getById(id);
   }
 
-  updateOffre(specialite: Specialite) {
-    return this.update(specialite);
+  updateOffre(ue: Ue) {
+    return this.update(ue);
   }
-
 }

@@ -1,0 +1,88 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedUes || !selectedUes.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="ues()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','code_ue','description']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedUes" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Unités d'Enseignement</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="name">Nom <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="code_ue">Code UE <p-sortIcon field="code_ue"></p-sortIcon></th>
+                        <th pSortableColumn="credits">Crédits <p-sortIcon field="credits"></p-sortIcon></th>
+                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ue>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="ue"></p-tableCheckbox>
+                        </td>
+                        <td>{{ue.id}}</td>
+                        <td>{{ue.name}}</td>
+                        <td>{{ue.code_ue}}</td>
+                        <td>{{ue.credits}}</td>
+                        <td>{{ue.description}}</td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editUe(ue)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteUe(ue)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="ueDialog" [style]="{width: '450px'}" header="Détails de l'UE" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Nom</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="ue.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !ue.name}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !ue.name">Le nom est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="code_ue">Code UE</label>
+                    <input type="text" pInputText id="code_ue" [(ngModel)]="ue.code_ue" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !ue.code_ue}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !ue.code_ue">Le code UE est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="credits">Crédits</label>
+                    <p-inputNumber id="credits" [(ngModel)]="ue.credits" mode="decimal" [showButtons]="true" [min]="0" [max]="30"></p-inputNumber>
+                </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="ue.description" rows="3" cols="20"></textarea>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveUe()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

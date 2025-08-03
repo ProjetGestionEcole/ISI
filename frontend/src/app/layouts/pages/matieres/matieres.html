@@ -1,0 +1,106 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedMatiere()" [disabled]="!selectedMatieres || !selectedMatieres.length"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <button pButton pRipple label="Exporter" icon="pi pi-upload" class="p-button-help" (click)="exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="matieres()" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','code_matiere','description']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedMatieres" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Matières</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="name">Nom <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="code_matiere">Code Matière <p-sortIcon field="code_matiere"></p-sortIcon></th>
+                        <th pSortableColumn="coefficient">Coefficient <p-sortIcon field="coefficient"></p-sortIcon></th>
+                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-matiere>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="matiere"></p-tableCheckbox>
+                        </td>
+                        <td style="width:14%; min-width:10rem;"><span class="p-column-title">ID</span>
+                            {{matiere.id}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Nom</span>
+                            {{matiere.name}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Code Matière</span>
+                            {{matiere.code_matiere}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Coefficient</span>
+                            {{matiere.coefficient}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Description</span>
+                            {{matiere.description}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editMatiere(matiere)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteMatiere(matiere)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="matiereDialog" [style]="{width: '450px'}" header="Détails de la Matière" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Nom</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="matiere.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !matiere.name}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !matiere.name">Le nom est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="code_matiere">Code Matière</label>
+                    <input type="text" pInputText id="code_matiere" [(ngModel)]="matiere.code_matiere" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !matiere.code_matiere}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !matiere.code_matiere">Le code matière est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="coefficient">Coefficient</label>
+                    <p-inputNumber id="coefficient" [(ngModel)]="matiere.coefficient" mode="decimal" [showButtons]="true" [min]="0"></p-inputNumber>
+                </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="matiere.description" required rows="3" cols="20"></textarea>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveMatiere()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

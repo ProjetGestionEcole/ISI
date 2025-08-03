@@ -1,0 +1,98 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedEnseignements || !selectedEnseignements.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="enseignements()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['enseignant_id','matiere_id','classe_id']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedEnseignements" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Enseignements</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="enseignant_id">Enseignant ID <p-sortIcon field="enseignant_id"></p-sortIcon></th>
+                        <th pSortableColumn="matiere_id">Matière ID <p-sortIcon field="matiere_id"></p-sortIcon></th>
+                        <th pSortableColumn="classe_id">Classe ID <p-sortIcon field="classe_id"></p-sortIcon></th>
+                        <th pSortableColumn="volume_horaire">Volume Horaire <p-sortIcon field="volume_horaire"></p-sortIcon></th>
+                        <th pSortableColumn="coefficient">Coefficient <p-sortIcon field="coefficient"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-enseignement>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="enseignement"></p-tableCheckbox>
+                        </td>
+                        <td>{{enseignement.id}}</td>
+                        <td>{{enseignement.enseignant_id}}</td>
+                        <td>{{enseignement.matiere_id}}</td>
+                        <td>{{enseignement.classe_id}}</td>
+                        <td>{{enseignement.volume_horaire}}h</td>
+                        <td>{{enseignement.coefficient}}</td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editEnseignement(enseignement)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteEnseignement(enseignement)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="enseignementDialog" [style]="{width: '450px'}" header="Détails de l'Enseignement" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="enseignant_id">ID Enseignant</label>
+                    <p-inputNumber id="enseignant_id" [(ngModel)]="enseignement.enseignant_id" mode="decimal" [showButtons]="true" [min]="1" required [ngClass]="{'ng-invalid ng-dirty' : submitted && enseignement.enseignant_id <= 0}"></p-inputNumber>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && enseignement.enseignant_id <= 0">L'ID enseignant est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="matiere_id">ID Matière</label>
+                    <p-inputNumber id="matiere_id" [(ngModel)]="enseignement.matiere_id" mode="decimal" [showButtons]="true" [min]="1" required [ngClass]="{'ng-invalid ng-dirty' : submitted && enseignement.matiere_id <= 0}"></p-inputNumber>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && enseignement.matiere_id <= 0">L'ID matière est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="classe_id">ID Classe</label>
+                    <p-inputNumber id="classe_id" [(ngModel)]="enseignement.classe_id" mode="decimal" [showButtons]="true" [min]="1"></p-inputNumber>
+                </div>
+                <div class="field">
+                    <label for="annee_scolaire_id">ID Année Scolaire</label>
+                    <p-inputNumber id="annee_scolaire_id" [(ngModel)]="enseignement.annee_scolaire_id" mode="decimal" [showButtons]="true" [min]="1"></p-inputNumber>
+                </div>
+                <div class="field">
+                    <label for="volume_horaire">Volume Horaire (heures)</label>
+                    <p-inputNumber id="volume_horaire" [(ngModel)]="enseignement.volume_horaire" mode="decimal" [showButtons]="true" [min]="0" [max]="200"></p-inputNumber>
+                </div>
+                <div class="field">
+                    <label for="coefficient">Coefficient</label>
+                    <p-inputNumber id="coefficient" [(ngModel)]="enseignement.coefficient" mode="decimal" [showButtons]="true" [min]="0.5" [max]="5" [step]="0.5"></p-inputNumber>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveEnseignement()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

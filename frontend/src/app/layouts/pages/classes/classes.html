@@ -1,0 +1,82 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedClasses || !selectedClasses.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="classes()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','code_classe']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedClasses" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Classes</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="name">Nom <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="code_classe">Code Classe <p-sortIcon field="code_classe"></p-sortIcon></th>
+                        <th pSortableColumn="effectif">Effectif <p-sortIcon field="effectif"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-classe>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="classe"></p-tableCheckbox>
+                        </td>
+                        <td>{{classe.id}}</td>
+                        <td>{{classe.name}}</td>
+                        <td>{{classe.code_classe}}</td>
+                        <td>{{classe.effectif}}</td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editClasse(classe)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteClasse(classe)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="classeDialog" [style]="{width: '450px'}" header="Détails de la Classe" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Nom</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="classe.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !classe.name}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !classe.name">Le nom est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="code_classe">Code Classe</label>
+                    <input type="text" pInputText id="code_classe" [(ngModel)]="classe.code_classe" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !classe.code_classe}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !classe.code_classe">Le code classe est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="effectif">Effectif</label>
+                    <p-inputNumber id="effectif" [(ngModel)]="classe.effectif" mode="decimal" [showButtons]="true" [min]="0"></p-inputNumber>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveClasse()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

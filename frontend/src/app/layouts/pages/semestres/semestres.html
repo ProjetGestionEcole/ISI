@@ -1,0 +1,87 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedSemestres || !selectedSemestres.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="semestres()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','numero']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedSemestres" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Semestres</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="name">Nom <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="numero">Numéro <p-sortIcon field="numero"></p-sortIcon></th>
+                        <th pSortableColumn="date_debut">Date Début <p-sortIcon field="date_debut"></p-sortIcon></th>
+                        <th pSortableColumn="date_fin">Date Fin <p-sortIcon field="date_fin"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-semestre>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="semestre"></p-tableCheckbox>
+                        </td>
+                        <td>{{semestre.id}}</td>
+                        <td>{{semestre.name}}</td>
+                        <td>{{semestre.numero}}</td>
+                        <td>{{semestre.date_debut | date:'dd/MM/yyyy'}}</td>
+                        <td>{{semestre.date_fin | date:'dd/MM/yyyy'}}</td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editSemestre(semestre)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteSemestre(semestre)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="semestreDialog" [style]="{width: '450px'}" header="Détails du Semestre" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Nom</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="semestre.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !semestre.name}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !semestre.name">Le nom est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="numero">Numéro</label>
+                    <p-inputNumber id="numero" [(ngModel)]="semestre.numero" mode="decimal" [showButtons]="true" [min]="1" [max]="10"></p-inputNumber>
+                </div>
+                <div class="field">
+                    <label for="date_debut">Date de Début</label>
+                    <p-calendar id="date_debut" [(ngModel)]="semestre.date_debut" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="field">
+                    <label for="date_fin">Date de Fin</label>
+                    <p-calendar id="date_fin" [(ngModel)]="semestre.date_fin" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveSemestre()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

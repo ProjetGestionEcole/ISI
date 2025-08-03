@@ -1,0 +1,89 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedAnneesScolaires || !selectedAnneesScolaires.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="anneesScolaires()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['libelle','date_debut','date_fin']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedAnneesScolaires" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Années Scolaires</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="libelle">Libellé <p-sortIcon field="libelle"></p-sortIcon></th>
+                        <th pSortableColumn="date_debut">Date Début <p-sortIcon field="date_debut"></p-sortIcon></th>
+                        <th pSortableColumn="date_fin">Date Fin <p-sortIcon field="date_fin"></p-sortIcon></th>
+                        <th pSortableColumn="active">Active <p-sortIcon field="active"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-anneeScolaire>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="anneeScolaire"></p-tableCheckbox>
+                        </td>
+                        <td>{{anneeScolaire.id}}</td>
+                        <td>{{anneeScolaire.libelle}}</td>
+                        <td>{{anneeScolaire.date_debut | date:'dd/MM/yyyy'}}</td>
+                        <td>{{anneeScolaire.date_fin | date:'dd/MM/yyyy'}}</td>
+                        <td>
+                            <i class="pi" [ngClass]="{'pi-check-circle text-green-500': anneeScolaire.active, 'pi-times-circle text-red-500': !anneeScolaire.active}"></i>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editAnneeScolaire(anneeScolaire)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteAnneeScolaire(anneeScolaire)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="anneeScolaireDialog" [style]="{width: '450px'}" header="Détails de l'Année Scolaire" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="libelle">Libellé</label>
+                    <input type="text" pInputText id="libelle" [(ngModel)]="anneeScolaire.libelle" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !anneeScolaire.libelle}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !anneeScolaire.libelle">Le libellé est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="date_debut">Date de Début</label>
+                    <p-calendar id="date_debut" [(ngModel)]="anneeScolaire.date_debut" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="field">
+                    <label for="date_fin">Date de Fin</label>
+                    <p-calendar id="date_fin" [(ngModel)]="anneeScolaire.date_fin" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="field-checkbox">
+                    <p-checkbox id="active" [(ngModel)]="anneeScolaire.active" binary="true"></p-checkbox>
+                    <label for="active">Année active</label>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveAnneeScolaire()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>

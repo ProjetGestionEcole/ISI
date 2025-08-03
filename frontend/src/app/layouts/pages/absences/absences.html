@@ -1,0 +1,90 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" [disabled]="!selectedAbsences || !selectedAbsences.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="absences()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['motif','date_absence']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedAbsences" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Gestion des Absences</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Rechercher..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="date_absence">Date <p-sortIcon field="date_absence"></p-sortIcon></th>
+                        <th pSortableColumn="motif">Motif <p-sortIcon field="motif"></p-sortIcon></th>
+                        <th pSortableColumn="duree_heures">Durée (h) <p-sortIcon field="duree_heures"></p-sortIcon></th>
+                        <th pSortableColumn="justifiee">Justifiée <p-sortIcon field="justifiee"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-absence>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="absence"></p-tableCheckbox>
+                        </td>
+                        <td>{{absence.id}}</td>
+                        <td>{{absence.date_absence | date:'dd/MM/yyyy'}}</td>
+                        <td>{{absence.motif}}</td>
+                        <td>{{absence.duree_heures}}h</td>
+                        <td>
+                            <i class="pi" [ngClass]="{'pi-check-circle text-green-500': absence.justifiee, 'pi-times-circle text-red-500': !absence.justifiee}"></i>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editAbsence(absence)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteAbsence(absence)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="absenceDialog" [style]="{width: '450px'}" header="Détails de l'Absence" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="date_absence">Date d'Absence</label>
+                    <p-calendar id="date_absence" [(ngModel)]="absence.date_absence" dateFormat="dd/mm/yy" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !absence.date_absence}"></p-calendar>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !absence.date_absence">La date est requise.</small>
+                </div>
+                <div class="field">
+                    <label for="motif">Motif</label>
+                    <textarea id="motif" pInputTextarea [(ngModel)]="absence.motif" rows="3" cols="20" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !absence.motif}"></textarea>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !absence.motif">Le motif est requis.</small>
+                </div>
+                <div class="field">
+                    <label for="duree_heures">Durée (heures)</label>
+                    <p-inputNumber id="duree_heures" [(ngModel)]="absence.duree_heures" mode="decimal" [showButtons]="true" [min]="0.5" [max]="8" [step]="0.5"></p-inputNumber>
+                </div>
+                <div class="field-checkbox">
+                    <p-checkbox id="justifiee" [(ngModel)]="absence.justifiee" binary="true"></p-checkbox>
+                    <label for="justifiee">Absence justifiée</label>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveAbsence()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+</div>
