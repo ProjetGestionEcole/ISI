@@ -16,14 +16,35 @@ class MatiereSeeder extends Seeder
         //
 
         $listeMatieres = [
-            'Algèbre', 'Analyse', 'Programmation', 'Réseaux', 'Base de données',
-            'Systèmes d’exploitation', 'Mathématiques discrètes', 'Compilation',
-            'Web', 'Java', 'Sécurité informatique', 'Machine Learning',
-            'DevOps', 'UML', 'Électronique', 'IA', 'Big Data', 'Python',
-            'Administration Systèmes', 'Gestion de projet','Laravel', 'React', 'Angular',
-            'Node.js', 'Docker', 'Kubernetes', 'Cloud Computing', 'Blockchain',
-            'Développement Mobile', 'Cybersécurité', 'Data Science', 'Internet des Objets',
-            'Virtualisation', 'Conception de Systèmes Embarqués', 
+            // Mathématiques et fondamentaux
+            'Algèbre', 'Analyse', 'Mathématiques discrètes', 'Probabilités et Statistiques',
+            'Logique Mathématique', 'Recherche Opérationnelle',
+            
+            // Programmation et développement
+            'Programmation C/C++', 'Programmation Java', 'Programmation Python', 
+            'Développement Web', 'Développement Mobile', 'Laravel Framework', 
+            'React.js', 'Angular', 'Node.js', 'Vue.js',
+            
+            // Systèmes et réseaux
+            'Systèmes d\'exploitation', 'Réseaux Informatiques', 'Administration Systèmes',
+            'Sécurité des Systèmes', 'Architecture des Ordinateurs', 'Systèmes Distribués',
+            
+            // Base de données et IA
+            'Base de données', 'Data Mining', 'Big Data', 'Intelligence Artificielle',
+            'Machine Learning', 'Deep Learning', 'Data Science', 'NoSQL',
+            
+            // Génie logiciel
+            'Génie Logiciel', 'UML', 'Méthodes Agiles', 'Gestion de Projet',
+            'Tests Logiciels', 'Qualité Logicielle', 'DevOps',
+            
+            // Technologies émergentes
+            'Cloud Computing', 'Blockchain', 'Internet des Objets (IoT)',
+            'Cybersécurité', 'Virtualisation', 'Docker', 'Kubernetes',
+            
+            // Spécialisés Sénégal/Afrique
+            'TIC pour le Développement', 'E-Government', 'Solutions Mobiles Africaines',
+            'Français Technique', 'Communication Professionnelle', 'Droit de l\'Informatique',
+            'Entrepreneuriat Numérique', 'Éthique Informatique'
         ];
 
         $ues = DB::table('ues')->get();

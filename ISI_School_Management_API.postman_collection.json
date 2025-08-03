@@ -1,0 +1,1395 @@
+{
+	"info": {
+		"_postman_id": "isi-school-management-api",
+		"name": "ISI School Management API",
+		"description": "Complete API collection for ISI School Management System - Senegalese Educational System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🎓 Specialités",
+			"item": [
+				{
+					"name": "Get All Specialités",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/specialites",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "specialites"]
+						}
+					}
+				},
+				{
+					"name": "Create Specialité",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Intelligence Artificielle Avancée\",\n    \"code_specialite\": \"IAA\",\n    \"duree\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/specialites",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "specialites"]
+						}
+					}
+				},
+				{
+					"name": "Get Specialité by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/specialites/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "specialites", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Specialité",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Génie Logiciel Avancé\",\n    \"code_specialite\": \"GLA\",\n    \"duree\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/specialites/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "specialites", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Specialité",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/specialites/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "specialites", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📚 Niveaux",
+			"item": [
+				{
+					"name": "Get All Niveaux",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/niveaux",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "niveaux"]
+						}
+					}
+				},
+				{
+					"name": "Create Niveau",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Licence 4\",\n    \"code_niveau\": \"L4\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/niveaux",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "niveaux"]
+						}
+					}
+				},
+				{
+					"name": "Get Niveau by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/niveaux/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "niveaux", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Niveau",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Licence 1 Modifiée\",\n    \"code_niveau\": \"L1M\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/niveaux/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "niveaux", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Niveau",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/niveaux/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "niveaux", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏫 Classes",
+			"item": [
+				{
+					"name": "Get All Classes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/classes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "classes"]
+						}
+					}
+				},
+				{
+					"name": "Create Classe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom_classe\": \"Génie Logiciel L1 A\",\n    \"code_classe\": \"GL_L1_A\",\n    \"niveau_id\": 1,\n    \"specialite_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/classes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "classes"]
+						}
+					}
+				},
+				{
+					"name": "Get Classe by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/classes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "classes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Classe",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom_classe\": \"Génie Logiciel L1 B\",\n    \"code_classe\": \"GL_L1_B\",\n    \"niveau_id\": 1,\n    \"specialite_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/classes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "classes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Classe",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/classes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "classes", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📖 Matières",
+			"item": [
+				{
+					"name": "Get All Matières",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/matieres",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "matieres"]
+						}
+					}
+				},
+				{
+					"name": "Create Matière",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Laravel Framework Avancé\",\n    \"code_matiere\": \"LFA-001\",\n    \"code_ue\": \"UE-GL1\",\n    \"coef\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/matieres",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "matieres"]
+						}
+					}
+				},
+				{
+					"name": "Get Matière by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/matieres/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "matieres", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Matière",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Programmation PHP Avancée\",\n    \"code_matiere\": \"PPA-001\",\n    \"code_ue\": \"UE-GL1\",\n    \"coef\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/matieres/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "matieres", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Matière",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/matieres/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "matieres", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎯 UEs (Unités d'Enseignement)",
+			"item": [
+				{
+					"name": "Get All UEs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/ues",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "ues"]
+						}
+					}
+				},
+				{
+					"name": "Create UE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"UE Programmation Web\",\n    \"code_ue\": \"UE-WEB-001\",\n    \"code_semestre\": \"GL_S1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/ues",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "ues"]
+						}
+					}
+				},
+				{
+					"name": "Get UE by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/ues/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "ues", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update UE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"UE Développement Mobile\",\n    \"code_ue\": \"UE-MOB-001\",\n    \"code_semestre\": \"GL_S2\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/ues/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "ues", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete UE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/ues/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "ues", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📅 Semestres",
+			"item": [
+				{
+					"name": "Get All Semestres",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/semestres",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "semestres"]
+						}
+					}
+				},
+				{
+					"name": "Create Semestre",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Génie Logiciel Semestre 1\",\n    \"code_semestre\": \"GL_S1\",\n    \"niveau_id\": 1,\n    \"specialite_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/semestres",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "semestres"]
+						}
+					}
+				},
+				{
+					"name": "Get Semestre by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/semestres/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "semestres", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Semestre",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Génie Logiciel Semestre 2\",\n    \"code_semestre\": \"GL_S2\",\n    \"niveau_id\": 1,\n    \"specialite_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/semestres/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "semestres", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Semestre",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/semestres/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "semestres", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👨‍🎓 Élèves",
+			"item": [
+				{
+					"name": "Get All Élèves",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/eleves",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "eleves"]
+						}
+					}
+				},
+				{
+					"name": "Create Élève",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 3,\n    \"matricule\": \"ISI2025001\",\n    \"date_naissance\": \"2000-05-15\",\n    \"lieu_naissance\": \"Dakar\",\n    \"sexe\": \"M\",\n    \"adresse\": \"Parcelles Assainies, Dakar\",\n    \"telephone\": \"775551234\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/eleves",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "eleves"]
+						}
+					}
+				},
+				{
+					"name": "Get Élève by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/eleves/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "eleves", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Élève",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 3,\n    \"matricule\": \"ISI2025001\",\n    \"date_naissance\": \"2000-05-15\",\n    \"lieu_naissance\": \"Saint-Louis\",\n    \"sexe\": \"M\",\n    \"adresse\": \"Médina, Dakar\",\n    \"telephone\": \"775551234\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/eleves/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "eleves", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Élève",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/eleves/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "eleves", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📝 Notes",
+			"item": [
+				{
+					"name": "Get All Notes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/notes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "notes"]
+						}
+					}
+				},
+				{
+					"name": "Create Note",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eleve_id\": 1,\n    \"matiere_id\": 1,\n    \"note\": 15.5,\n    \"type_evaluation\": \"Examen\",\n    \"date_evaluation\": \"2025-01-15\",\n    \"semestre_id\": 1,\n    \"annee_scolaire_id\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/notes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "notes"]
+						}
+					}
+				},
+				{
+					"name": "Get Note by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/notes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "notes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Note",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eleve_id\": 1,\n    \"matiere_id\": 1,\n    \"note\": 16.0,\n    \"type_evaluation\": \"Examen Final\",\n    \"date_evaluation\": \"2025-01-15\",\n    \"semestre_id\": 1,\n    \"annee_scolaire_id\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/notes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "notes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Note",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/notes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "notes", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "❌ Absences",
+			"item": [
+				{
+					"name": "Get All Absences",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/absences",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "absences"]
+						}
+					}
+				},
+				{
+					"name": "Create Absence",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eleve_id\": 1,\n    \"matiere_id\": 1,\n    \"date_absence\": \"2025-01-20\",\n    \"justifie\": false,\n    \"motif\": \"Absence non justifiée\",\n    \"heure_debut\": \"08:00:00\",\n    \"heure_fin\": \"10:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/absences",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "absences"]
+						}
+					}
+				},
+				{
+					"name": "Get Absence by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/absences/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "absences", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Absence",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eleve_id\": 1,\n    \"matiere_id\": 1,\n    \"date_absence\": \"2025-01-20\",\n    \"justifie\": true,\n    \"motif\": \"Maladie - Certificat médical\",\n    \"heure_debut\": \"08:00:00\",\n    \"heure_fin\": \"10:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/absences/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "absences", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Absence",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/absences/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "absences", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏆 Mentions",
+			"item": [
+				{
+					"name": "Get All Mentions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/mentions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "mentions"]
+						}
+					}
+				},
+				{
+					"name": "Create Mention",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"appreciation\": \"Mention Très Bien Plus\",\n    \"min_moyenne\": 18.0,\n    \"max_moyenne\": 20.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/mentions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "mentions"]
+						}
+					}
+				},
+				{
+					"name": "Get Mention by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/mentions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "mentions", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Mention",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"appreciation\": \"Mention Excellence\",\n    \"min_moyenne\": 19.0,\n    \"max_moyenne\": 20.0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/mentions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "mentions", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Mention",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/mentions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "mentions", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📅 Années Scolaires",
+			"item": [
+				{
+					"name": "Get All Années Scolaires",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/anneescolaires",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "anneescolaires"]
+						}
+					}
+				},
+				{
+					"name": "Create Année Scolaire",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"annee_scolaire\": \"2026-2027\",\n    \"date_debut\": \"2026-09-01\",\n    \"date_fin\": \"2027-06-30\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anneescolaires",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "anneescolaires"]
+						}
+					}
+				},
+				{
+					"name": "Get Année Scolaire by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/anneescolaires/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "anneescolaires", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Année Scolaire",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"annee_scolaire\": \"2026-2027\",\n    \"date_debut\": \"2026-10-01\",\n    \"date_fin\": \"2027-07-31\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anneescolaires/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "anneescolaires", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Année Scolaire",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/anneescolaires/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "anneescolaires", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📚 Enseignements",
+			"item": [
+				{
+					"name": "Get All Enseignements",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/enseignements",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "enseignements"]
+						}
+					}
+				},
+				{
+					"name": "Create Enseignement",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"professeur_id\": 1,\n    \"matiere_id\": 1,\n    \"classe_id\": 1,\n    \"annee_scolaire_id\": 3,\n    \"volume_horaire\": 40\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/enseignements",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "enseignements"]
+						}
+					}
+				},
+				{
+					"name": "Get Enseignement by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/enseignements/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "enseignements", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Enseignement",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"professeur_id\": 2,\n    \"matiere_id\": 1,\n    \"classe_id\": 1,\n    \"annee_scolaire_id\": 3,\n    \"volume_horaire\": 45\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/enseignements/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "enseignements", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Enseignement",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/enseignements/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "enseignements", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📋 Inscriptions",
+			"item": [
+				{
+					"name": "Get All Inscriptions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inscriptions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "inscriptions"]
+						}
+					}
+				},
+				{
+					"name": "Create Inscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eleve_id\": 1,\n    \"classe_id\": 1,\n    \"annee_scolaire_id\": 3,\n    \"date_inscription\": \"2024-09-01\",\n    \"statut\": \"Active\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/inscriptions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "inscriptions"]
+						}
+					}
+				},
+				{
+					"name": "Get Inscription by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inscriptions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "inscriptions", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Inscription",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eleve_id\": 1,\n    \"classe_id\": 2,\n    \"annee_scolaire_id\": 3,\n    \"date_inscription\": \"2024-09-01\",\n    \"statut\": \"Suspendue\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/inscriptions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "inscriptions", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Inscription",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inscriptions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "inscriptions", "1"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		}
+	]
+}

@@ -18,25 +18,30 @@ class DatabaseSeeder extends Seeder
         ]);*/
 
 
-        //Classes Mères n'ont pas de dépendances
-    $this->call([
-        UserSeeder::class,
-        NiveauxSeeder::class,
-        SpecialiteSeeder::class,
-        MentionSeeder::class,
-        AnneeScolaireSeeder::class,
-    ]);
-
-        // Ensuite les enfants (UE, matières, etc)
+        // Classes mères n'ont pas de dépendances
         $this->call([
-            // Ajoute d'autres seeders si nécessaire
+            UserSeeder::class,
+            NiveauxSeeder::class,
+            SpecialiteSeeder::class,
+            MentionSeeder::class,
+            AnneeScolaireSeeder::class,
+        ]);
+
+        // Ensuite les enfants (dépendent des classes mères)
+        $this->call([
             ClasseSeeder::class,
             SemestreSeeder::class,
             UeSeeder::class,
             MatiereSeeder::class,
+            LeparentSeeder::class,
+        ]);
+
+        // Enfin les relations (dépendent de tout le reste)
+        $this->call([
             InscriptionSeeder::class,
             EnseignementSeeder::class,
             NoteSeeder::class,
+            AbsenceSeeder::class,
         ]);
     }
 }
