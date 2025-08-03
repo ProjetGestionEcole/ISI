@@ -20,6 +20,10 @@ use App\Http\Controllers\V1\MentionController;
 use App\Http\Controllers\V1\NiveauController;
 use App\Http\Controllers\V1\SemestreController;
 use App\Http\Controllers\V1\UeController;
+use App\Http\Controllers\V1\EtudiantController;
+use App\Http\Controllers\V1\ProfController;
+use App\Http\Controllers\V1\AdminController;
+use App\Http\Controllers\V1\ParentController;
 
 // ROUTES D'AUTHENTIFICATION (publiques)
 
@@ -60,6 +64,30 @@ Route::prefix('v1')->group(function () {
         
         // Route de déconnexion
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+        
+        // Role-specific user management routes
+        Route::apiResource('/etudiants', EtudiantController::class);
+        Route::apiResource('/profs', ProfController::class);
+        Route::apiResource('/admins', AdminController::class);
+        Route::apiResource('/parents', ParentController::class);
+        
+        // Additional role-specific endpoints
+        Route::get('/etudiants/{id}/notes', [EtudiantController::class, 'getNotes']);
+        Route::get('/etudiants/{id}/absences', [EtudiantController::class, 'getAbsences']);
+        Route::get('/etudiants/{id}/statistics', [EtudiantController::class, 'getStatistics']);
+        
+        Route::post('/profs/add-note', [ProfController::class, 'addNote']);
+        Route::get('/profs/{id}/subjects', [ProfController::class, 'getSubjects']);
+        Route::get('/profs/{id}/students-count', [ProfController::class, 'getStudentsCount']);
+        Route::get('/profs/{id}/notes-added', [ProfController::class, 'getNotesAdded']);
+        
+        Route::get('/admins/system-statistics', [AdminController::class, 'getSystemStatistics']);
+        
+        Route::post('/parents/link-student', [ParentController::class, 'linkToStudent']);
+        Route::get('/parents/{id}/children', [ParentController::class, 'getChildren']);
+        Route::get('/parents/{id}/children-notes', [ParentController::class, 'getChildrenNotes']);
+        Route::get('/parents/{id}/children-absences', [ParentController::class, 'getChildrenAbsences']);
+        Route::get('/parents/relationships', [ParentController::class, 'getRelationships']);
         
         // ROUTES MÉTIER (protégées)
         /*Route::apiResource('/specialites', SpecialiteController::class);
