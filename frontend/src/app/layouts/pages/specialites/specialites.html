@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <p-toolbar styleClass="mb-6">
     <ng-template #start>
         <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
@@ -11,7 +13,7 @@
 
 <p-table
     #dt
-    [value]="specialites"
+    [value]="specialites()"
     [rows]="10"
     [columns]="cols"
     [paginator]="true"
