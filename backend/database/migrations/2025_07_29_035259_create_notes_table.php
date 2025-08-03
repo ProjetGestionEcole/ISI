@@ -17,9 +17,8 @@ return new class extends Migration
             $table->tinyInteger('examen')->nullable();
 
             // Foreign keys
-            $table->string('code_matiere');
-            $table->foreign('code_matiere')->references('code_matiere')->on('matieres')->onDelete('cascade');
-            $table->foreignId('id_enseignant')->constrained('users')->onDelete('cascade');
+           $table->string('code_enseignement');
+            $table->foreign('code_enseignement')->references('code_enseignement')->on('enseignements')->onDelete('cascade');
             $table->foreignId('id_etudiant')->constrained('users')->onDelete('cascade');
 
 

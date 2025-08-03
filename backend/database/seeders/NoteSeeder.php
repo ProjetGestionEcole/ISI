@@ -3,44 +3,52 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Inscription;
-use App\Models\Enseignement;
-use App\Models\Note;
+use Illuminate\Support\Facades\DB;
 
 class NoteSeeder extends Seeder
 {
     public function run(): void
     {
-        $inscriptions = Inscription::whereIn(
-            'code_classe',
-            Enseignement::distinct()->pluck('code_classe')
-        )->take(5)->get();
+        // Get enseignements and students
+        $enseignements = DB::table('enseignements')->get();
+        $etudiants = DB::table('users')->where('role', 'Etudiant')->pluck('id')->toArray();
 
-        if ($inscriptions->isEmpty()) {
-            $this->command->warn("Aucune inscription avec enseignement.");
+        if ($enseignements->isEmpty() || empty($etudiants)) {
+            $this->command->warn("Aucun enseignement ou étudiant trouvé.");
             return;
         }
 
-        foreach ($inscriptions as $inscription) {
-            $enseignements = Enseignement::where('code_classe', $inscription->code_classe)->get();
-
-            foreach ($enseignements as $enseignement) {
-                Note::updateOrInsert(
-                    [
-                        'id_etudiant' => $inscription->etudiant_id,
-                        'code_matiere' => $enseignement->code_matiere,
-                    ],
-                    [
-                        'id_enseignant' => $enseignement->code_prof,
-                        'mcc' => rand(8, 20),
-                        'examen' => rand(6, 20),
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]
-                );
+        $noteCount = 0;
+        
+        // Create notes for each enseignement with random students
+        foreach ($enseignements as $enseignement) {
+            // Randomly select some students for this enseignement (simulate class enrollment)
+            $selectedStudents = array_rand(array_flip($etudiants), min(rand(3, 8), count($etudiants)));
+            if (!is_array($selectedStudents)) {
+                $selectedStudents = [$selectedStudents];
+            }
+            
+            foreach ($selectedStudents as $etudiantId) {
+                try {
+                    DB::table('notes')->updateOrInsert(
+                        [
+                            'code_enseignement' => $enseignement->code_enseignement,
+                            'id_etudiant' => $etudiantId,
+                        ],
+                        [
+                            'mcc' => rand(8, 20),
+                            'examen' => rand(6, 20),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]
+                    );
+                    $noteCount++;
+                } catch (\Exception $e) {
+                    echo "Error creating note for enseignement {$enseignement->code_enseignement}: " . $e->getMessage() . "\n";
+                }
             }
         }
 
-        $this->command->info("Notes générées pour 5 inscriptions.");
+        $this->command->info("$noteCount notes générées pour les enseignements.");
     }
 }
