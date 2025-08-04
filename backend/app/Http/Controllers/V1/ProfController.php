@@ -5,15 +5,51 @@ namespace App\Http\Controllers\V1;
 use App\Models\Prof;
 use App\Models\User;
 use App\Models\Note;
+use App\Models\Enseignement;
+use App\Models\Matiere;
+use App\Models\Absence;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 
 class ProfController extends Controller
 {
+protected function successResponse($data, $message = 'Success', $code = 200): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data
+        ], $code);
+    }
 
+    /**
+     * Return an error JSON response
+     */
+    protected function errorResponse($message = 'Error', $code = 400): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => null
+        ], $code);
+    }
+
+    /**
+     * Return a validation error JSON response
+     */
+    protected function validationErrorResponse(ValidationException $e): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur de validation',
+            'data' => null,
+            'errors' => $e->errors()
+        ], 422);
+    }
     /**
      * Display a listing of all professors
      */
@@ -179,6 +215,144 @@ class ProfController extends Controller
             return $this->successResponse($notes, 'Notes du professeur récupérées avec succès');
         } catch (\Exception $e) {
             return $this->errorResponse('Erreur lors de la récupération des notes', 500);
+        }
+    }
+
+    // ========== AUTHENTICATED USER ENDPOINTS ==========
+
+    /**
+     * Get authenticated professor's enseignements
+     */
+    public function getMyEnseignements(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Prof') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            $enseignements = Enseignement::where('code_prof', $user->id)
+                ->with(['matiere', 'prof'])
+                ->get();
+
+            return $this->successResponse($enseignements, 'Mes enseignements récupérés avec succès');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erreur lors de la récupération des enseignements', 500);
+        }
+    }
+
+    /**
+     * Get authenticated professor's subjects
+     */
+    public function getMyMatieres(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Prof') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            $enseignements = Enseignement::where('code_prof', $user->id)->get();
+            $matiereCodes = $enseignements->pluck('code_matiere');
+            
+            $matieres = Matiere::whereIn('code_matiere', $matiereCodes)
+                ->with(['ue', 'enseignements'])
+                ->get();
+
+            return $this->successResponse($matieres, 'Mes matières récupérées avec succès');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erreur lors de la récupération des matières', 500);
+        }
+    }
+
+    /**
+     * Get authenticated professor's notes
+     */
+    public function getMyNotes(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Prof') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            $enseignements = Enseignement::where('code_prof', $user->id)->get();
+            $enseignementCodes = $enseignements->pluck('code_enseignement');
+            
+            $notes = Note::whereIn('code_enseignement', $enseignementCodes)
+                ->with(['etudiant', 'enseignement.matiere'])
+                ->get();
+
+            return $this->successResponse($notes, 'Mes notes récupérées avec succès');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erreur lors de la récupération des notes', 500);
+        }
+    }
+
+    /**
+     * Get authenticated professor's recorded absences
+     */
+    public function getMyAbsences(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Prof') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            $absences = Absence::where('prof_id', $user->id)
+                ->with(['etudiant', 'matiere'])
+                ->get();
+
+            return $this->successResponse($absences, 'Mes absences enregistrées récupérées avec succès');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erreur lors de la récupération des absences', 500);
+        }
+    }
+
+    /**
+     * Get authenticated professor's dashboard statistics
+     */
+    public function getMyDashboardStats(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Prof') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            $enseignementsCount = Enseignement::where('code_prof', $user->id)->count();
+            $notesAdded = Note::whereHas('enseignement', function($query) use ($user) {
+                $query->where('code_prof', $user->id);
+            })->count();
+            $absencesRecorded = Absence::where('prof_id', $user->id)->count();
+            
+            // Get subjects taught by this professor
+            $matieresCount = Matiere::whereHas('enseignements', function($query) use ($user) {
+                $query->where('code_prof', $user->id);
+            })->count();
+            
+            // Get students taught by this professor
+            $studentsCount = Note::whereHas('enseignement', function($query) use ($user) {
+                $query->where('code_prof', $user->id);
+            })->distinct('id_etudiant')->count();
+            
+            $stats = [
+                'enseignements_count' => $enseignementsCount,
+                'matieres_count' => $matieresCount,
+                'notes_added' => $notesAdded,
+                'absences_recorded' => $absencesRecorded,
+                'students_count' => $studentsCount,
+            ];
+
+            return $this->successResponse($stats, 'Mes statistiques récupérées avec succès');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erreur lors de la récupération des statistiques', 500);
         }
     }
 }

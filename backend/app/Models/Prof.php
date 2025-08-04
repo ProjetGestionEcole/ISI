@@ -22,7 +22,7 @@ class Prof extends User
     // Relationships
     public function enseignements(): HasMany
     {
-        return $this->hasMany(Enseignement::class, 'user_id');
+        return $this->hasMany(Enseignement::class, 'code_prof');
     }
 
     public function notes(): HasMany
