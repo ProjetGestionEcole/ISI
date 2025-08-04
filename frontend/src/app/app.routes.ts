@@ -22,6 +22,23 @@ export const appRoutes: Routes = [
             { path: 'enseignement', loadComponent: () => import('./layouts/pages/enseignements/enseignements').then(m => m.Enseignements) },
             { path: 'inscription', loadComponent: () => import('./layouts/pages/inscriptions/inscriptions').then(m => m.Inscriptions) },
             { path: 'leparent', loadComponent: () => import('./layouts/pages/leparents/leparents').then(m => m.Leparents) },
+            
+            // Admin Routes avec lazy loading
+            { 
+                path: 'admin/dashboard', 
+                loadComponent: () => import('./layouts/pages/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboard),
+                data: { title: 'Dashboard Admin' }
+            },
+            { 
+                path: 'admin/eleves', 
+                loadComponent: () => import('./layouts/pages/admin/eleves/eleves.component').then(m => m.AdminEleves),
+                data: { title: 'Gestion des Élèves' }
+            },
+            { 
+                path: 'admin/enseignants', 
+                loadComponent: () => import('./layouts/pages/admin/enseignants/enseignants.component').then(m => m.AdminEnseignants),
+                data: { title: 'Gestion des Enseignants' }
+            },
         ]
     },
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },

@@ -1,0 +1,388 @@
+// Eleves Admin Styles - Sakai Theme Compatible
+
+:host ::ng-deep {
+    // Table customizations
+    .p-datatable {
+        .p-datatable-thead > tr > th {
+            background-color: var(--surface-b);
+            color: var(--text-color);
+            font-weight: 600;
+            border-bottom: 1px solid var(--surface-border);
+        }
+        
+        .p-datatable-tbody > tr {
+            transition: all 0.2s;
+            
+            &:hover {
+                background-color: var(--surface-hover);
+            }
+            
+            &.p-highlight {
+                background-color: var(--primary-50);
+                color: var(--primary-color-text);
+            }
+        }
+        
+        .p-datatable-tbody > tr > td {
+            border-bottom: 1px solid var(--surface-border);
+            padding: 1rem 0.75rem;
+        }
+    }
+    
+    // Form customizations
+    .p-dialog .p-dialog-content {
+        padding: 1.5rem;
+    }
+    
+    .p-inputtext {
+        width: 100%;
+        
+        &.ng-invalid.ng-dirty {
+            border-color: var(--red-500);
+            
+            &:focus {
+                box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.2);
+            }
+        }
+    }
+    
+    .p-dropdown {
+        width: 100%;
+        
+        &.ng-invalid.ng-dirty {
+            border-color: var(--red-500);
+            
+            &:focus {
+                box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.2);
+            }
+        }
+    }
+    
+    .p-calendar {
+        width: 100%;
+        
+        .p-inputtext {
+            &.ng-invalid.ng-dirty {
+                border-color: var(--red-500);
+                
+                &:focus {
+                    box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.2);
+                }
+            }
+        }
+    }
+    
+    // Button customizations
+    .p-button {
+        &.p-button-rounded {
+            width: 2.5rem;
+            height: 2.5rem;
+            
+            .p-button-icon {
+                font-size: 0.875rem;
+            }
+        }
+        
+        &:focus {
+            box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.2);
+        }
+    }
+    
+    // Tag customizations
+    .p-tag {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    
+    // Toolbar customizations
+    .p-toolbar {
+        background: var(--surface-b);
+        border: 1px solid var(--surface-border);
+        border-radius: var(--border-radius);
+        padding: 1rem;
+        
+        .p-toolbar-group-left,
+        .p-toolbar-group-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+    
+    // File upload customizations
+    .p-fileupload {
+        .p-fileupload-content {
+            border: 2px dashed var(--surface-border);
+            border-radius: var(--border-radius);
+            text-align: center;
+            padding: 2rem;
+            transition: all 0.3s;
+            
+            &:hover {
+                border-color: var(--primary-color);
+                background-color: var(--primary-50);
+            }
+        }
+        
+        .p-fileupload-choose {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            
+            &:hover {
+                background: var(--primary-600);
+                border-color: var(--primary-600);
+            }
+        }
+    }
+    
+    // Progress bar customizations
+    .p-progressbar {
+        .p-progressbar-value {
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-600));
+        }
+    }
+    
+    // Toast customizations
+    .p-toast {
+        .p-toast-message {
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.1);
+        }
+    }
+    
+    // Confirm dialog customizations
+    .p-confirm-dialog {
+        .p-dialog-header {
+            background: var(--surface-b);
+            border-bottom: 1px solid var(--surface-border);
+        }
+        
+        .p-dialog-content {
+            padding: 1.5rem;
+        }
+    }
+    
+    // Radio button customizations
+    .p-radiobutton {
+        .p-radiobutton-box {
+            border: 2px solid var(--surface-400);
+            
+            &.p-highlight {
+                border-color: var(--primary-color);
+                background: var(--primary-color);
+            }
+        }
+    }
+}
+
+// Custom classes
+.search-container {
+    position: relative;
+    
+    .p-input-icon-left {
+        width: 100%;
+        
+        i {
+            color: var(--text-color-secondary);
+        }
+        
+        input {
+            padding-left: 2.5rem;
+        }
+    }
+}
+
+.actions-column {
+    .p-button {
+        margin: 0 0.125rem;
+        
+        &:hover {
+            transform: translateY(-1px);
+        }
+    }
+}
+
+.status-badge {
+    &.status-inscrit {
+        background-color: var(--green-100);
+        color: var(--green-700);
+    }
+    
+    &.status-en-attente {
+        background-color: var(--yellow-100);
+        color: var(--yellow-700);
+    }
+    
+    &.status-suspendu {
+        background-color: var(--red-100);
+        color: var(--red-700);
+    }
+    
+    &.status-diplome {
+        background-color: var(--blue-100);
+        color: var(--blue-700);
+    }
+}
+
+.form-section {
+    border-top: 1px solid var(--surface-border);
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    
+    &:first-child {
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
+    }
+    
+    h5 {
+        color: var(--primary-color);
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        
+        &::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1rem;
+            background: var(--primary-color);
+            margin-right: 0.5rem;
+            border-radius: 2px;
+        }
+    }
+}
+
+.form-error {
+    .p-error {
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: var(--border-radius);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-color-secondary);
+    
+    i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    p {
+        margin: 0;
+        font-size: 1rem;
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    :host ::ng-deep {
+        .p-toolbar {
+            flex-direction: column;
+            gap: 1rem;
+            
+            .p-toolbar-group-left,
+            .p-toolbar-group-right {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        .p-datatable {
+            .p-datatable-tbody > tr > td {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+        }
+        
+        .p-dialog {
+            .p-dialog-content {
+                padding: 1rem;
+            }
+        }
+    }
+    
+    .actions-column {
+        .p-button {
+            width: 2rem;
+            height: 2rem;
+            
+            .p-button-icon {
+                font-size: 0.75rem;
+            }
+        }
+    }
+}
+
+// Print styles
+@media print {
+    .p-toolbar,
+    .actions-column,
+    .p-paginator {
+        display: none !important;
+    }
+    
+    :host ::ng-deep {
+        .p-datatable {
+            .p-datatable-tbody > tr > td {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+    }
+}
+
+// Animation classes
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scale-in {
+    animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
