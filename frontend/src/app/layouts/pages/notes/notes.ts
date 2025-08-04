@@ -73,15 +73,15 @@ export class Notes implements OnInit {
     this.note = {
       id: 0,
       code_enseignement: '',
-      id_etudiant: 0,
+      etudiant_id: 0,
       valeur: 0,
       type_evaluation: '',
       date_evaluation: '',
       coefficient: 0,
-      mcc: 0,
-      examen: 0,
-      code_matiere: '',
-      id_enseignant: 0
+      note_mcc: 0,
+      note_examen: 0,
+      matiere_id: 0,
+      enseignant_id: 0
     };
     this.submitted = false;
     this.noteDialog = true;
@@ -99,7 +99,7 @@ export class Notes implements OnInit {
 
   saveNote() {
     this.submitted = true;
-    if ((this.note.mcc !== undefined && this.note.mcc >= 0) || (this.note.examen !== undefined && this.note.examen >= 0)) {
+    if ((this.note.note_mcc !== undefined && this.note.note_mcc >= 0) || (this.note.note_examen !== undefined && this.note.note_examen >= 0)) {
       if (this.note.id && this.note.id > 0) {
         this.noteServices.updateOffre(this.note).subscribe({
           next: (updatedNote) => {

@@ -1,0 +1,37 @@
+.card {
+  margin-bottom: 1rem;
+}
+
+.quick-stats {
+  .stat-card {
+    background: var(--surface-100);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-color-secondary);
+    }
+  }
+}
+
+.actions-grid {
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .actions-grid {
+    flex-direction: column;
+  }
+  
+  .actions-grid p-button {
+    width: 100%;
+  }
+}

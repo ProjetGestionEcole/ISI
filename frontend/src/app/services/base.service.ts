@@ -56,7 +56,7 @@ export abstract class BaseService<T extends { [key: string]: any }> {
   /**
    * Check if cache entry is valid
    */
-  private isCacheValid(key: string): boolean {
+  protected isCacheValid(key: string): boolean {
     const entry = this.cache.get(key);
     if (!entry) return false;
     
@@ -67,7 +67,7 @@ export abstract class BaseService<T extends { [key: string]: any }> {
   /**
    * Set cache entry
    */
-  private setCache(key: string, data: any): void {
+  protected setCache(key: string, data: any): void {
     // Clean old entries if cache is full
     if (this.cache.size >= this.cacheConfig.maxSize) {
       const oldestKey = this.cache.keys().next().value;
@@ -85,7 +85,7 @@ export abstract class BaseService<T extends { [key: string]: any }> {
   /**
    * Get cache entry
    */
-  private getCache(key: string): any {
+  protected getCache(key: string): any {
     const entry = this.cache.get(key);
     return entry ? entry.data : null;
   }

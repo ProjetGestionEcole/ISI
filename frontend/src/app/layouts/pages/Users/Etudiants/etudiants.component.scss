@@ -1,0 +1,79 @@
+:host ::ng-deep .p-dialog .product-image {
+    width: 150px;
+    margin: 0 auto 2rem auto;
+    display: block;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    padding: 1rem;
+    text-align: left;
+    font-size: 1.5rem;
+}
+
+:host ::ng-deep .p-paginator {
+    .p-paginator-current {
+        margin-left: auto;
+    }
+}
+
+:host ::ng-deep .p-progressbar {
+    height: .5rem;
+    background-color: #D8DADC;
+
+    .p-progressbar-value {
+        background-color: #607D8B;
+    }
+}
+
+:host ::ng-deep .table-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .p-calendar .p-datepicker {
+    min-width: 25rem;
+
+    td {
+        font-weight: 400;
+    }
+}
+
+:host ::ng-deep .p-calendar.p-calendar-w-btn .p-inputtext {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+:host ::ng-deep .p-calendar.p-calendar-w-btn .p-datepicker-trigger {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+@media screen and (max-width: 960px) {
+    :host ::ng-deep .p-datatable {
+        .p-datatable-thead > tr > th,
+        .p-datatable-tfoot > tr > td {
+            display: none !important;
+        }
+
+        .p-datatable-tbody > tr > td {
+            text-align: left;
+            display: block;
+            width: 100%;
+            float: left;
+            clear: left;
+            border: 0 none;
+
+            .p-column-title {
+                padding: .4rem;
+                min-width: 30%;
+                display: inline-block;
+                margin: -.4rem 1rem -.4rem -.4rem;
+                font-weight: bold;
+            }
+
+            .p-progressbar {
+                margin-top: .5rem;
+            }
+        }
+    }
+}

@@ -1,5 +1,10 @@
+import { Niveau } from './niveau';
+import { Specialite } from './specialite';
+import { Ue } from './ue';
+import { Classe } from './classe';
+
 export class Semestre {
-    id?: number; // Primary key
+    id?: string; // Primary key (code_semestre)
     code_semestre!: string;
     name!: string;
     numero?: number; // Semester number
@@ -11,9 +16,9 @@ export class Semestre {
     created_at?: string;
     updated_at?: string;
     
-    // Relationships (populated when needed)
-    niveau?: any;
-    specialite?: any;
-    ues?: any[];
-    classes?: any[]; // Through classe_semestre pivot
+  // Relationships (populated when needed)
+  niveau?: Niveau;
+  specialite?: Specialite;
+  ues?: Ue[];
+  classes?: Classe[]; // Through classe_semestre pivot
 }

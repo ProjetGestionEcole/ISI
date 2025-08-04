@@ -1,0 +1,86 @@
+<div id="bulletin-content" class="grid">
+  <div class="col-12">
+    <div class="card">
+      <div class="flex justify-between align-items-center mb-4">
+        <h2>Mon Bulletin</h2>
+        <div class="flex gap-2">
+          <p-select 
+            [options]="semesters" 
+            [(ngModel)]="selectedSemester"
+            optionLabel="nom"
+            placeholder="Sélectionner un semestre"
+            (onChange)="onSemesterChange()"
+            [style]="{'min-width': '200px'}">
+          </p-select>
+          <p-button 
+            label="Télécharger PDF" 
+            icon="pi pi-download" 
+            severity="secondary"
+            (onClick)="downloadBulletin()">
+          </p-button>
+          <p-button 
+            label="Imprimer" 
+            icon="pi pi-print" 
+            severity="secondary"
+            (onClick)="printBulletin()">
+          </p-button>
+        </div>
+      </div>
+
+      <!-- Bulletin Table -->
+      <div *ngIf="bulletin()" class="mt-4">
+        <div class="grid mb-4">
+          <div class="col-12">
+            <div class="info-grid">
+              <div>
+                <strong>Nom:</strong> {{ bulletin()?.etudiant?.nom || '-' }} {{ bulletin()?.etudiant?.prenom || '-' }}
+              </div>
+              <div>
+                <strong>Matricule:</strong> {{ bulletin()?.etudiant?.matricule || '-' }}
+              </div>
+              <div>
+                <strong>Classe:</strong> {{ bulletin()?.etudiant?.classe?.nom_classe || bulletin()?.etudiant?.classe?.name || '-' }}
+              </div>
+              <div>
+                <strong>Semestre:</strong> {{ bulletin()?.semestre?.name || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <table class="grades-table">
+          <thead>
+            <tr>
+              <th>Matière</th>
+              <th>Note MCC</th>
+              <th>Note Examen</th>
+              <th>Note Finale</th>
+              <th>Coefficient</th>
+              <th>Type Évaluation</th>
+              <th>Appréciation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let note of bulletin()?.notes">
+              <td>{{ note.matiere.name || '-' }}</td>
+              <td><p-tag [value]="note.note_mcc?.toString() || '0'" [severity]="getGradeStatus(note.note_mcc || 0)"></p-tag></td>
+              <td><p-tag [value]="note.note_examen?.toString() || '0'" [severity]="getGradeStatus(note.note_examen || 0)"></p-tag></td>
+              <td><p-tag [value]="note.valeur.toString() || '0'" [severity]="getGradeStatus(note.valeur || 0)"></p-tag></td>
+              <td>{{ note.coefficient }}</td>
+              <td>{{ note.type_evaluation }}</td>
+              <td>{{ note.observation || note.comment || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Summary -->
+        <div class="summary">
+          <strong>Moyenne Générale:</strong> {{ bulletin()?.moyenne_generale }}<br />
+          <strong>Rang:</strong> {{ bulletin()?.rang }}<br />
+          <strong>Mention:</strong> <span class="mention" [ngClass]="getMentionColor(bulletin()?.mention?.appreciation || '')">{{ bulletin()?.mention?.appreciation || '-' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

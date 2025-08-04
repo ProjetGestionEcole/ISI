@@ -9,42 +9,86 @@ class NoteSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get enseignements and students
-        $enseignements = DB::table('enseignements')->get();
-        $etudiants = DB::table('users')->where('role', 'Etudiant')->pluck('id')->toArray();
+        // Follow proper academic structure: Student → Classe → Semestre → UE → Matiere → Enseignement → Note
+        
+        // Get all inscriptions (enrolled students)
+        $inscriptions = DB::table('inscriptions')
+            ->join('users', 'inscriptions.etudiant_id', '=', 'users.id')
+            ->where('users.role', 'Etudiant')
+            ->select('inscriptions.*', 'users.name as student_name')
+            ->get();
 
-        if ($enseignements->isEmpty() || empty($etudiants)) {
-            $this->command->warn("Aucun enseignement ou étudiant trouvé.");
+        if ($inscriptions->isEmpty()) {
+            $this->command->warn("Aucune inscription trouvée. Exécutez InscriptionSeeder d'abord.");
             return;
         }
 
         $noteCount = 0;
+        $this->command->info("Création des notes selon la structure académique...");
         
-        // Create notes for each enseignement with random students
-        foreach ($enseignements as $enseignement) {
-            // Randomly select some students for this enseignement (simulate class enrollment)
-            $selectedStudents = array_rand(array_flip($etudiants), min(rand(3, 8), count($etudiants)));
-            if (!is_array($selectedStudents)) {
-                $selectedStudents = [$selectedStudents];
+        foreach ($inscriptions as $inscription) {
+            $this->command->info("Traitement de l'étudiant {$inscription->student_name} (ID: {$inscription->etudiant_id}) - Classe: {$inscription->code_classe}");
+            
+            // Get semesters for this student's class
+            $semestres = DB::table('classe_semestre')
+                ->join('classes', 'classe_semestre.classe_id', '=', 'classes.id')
+                ->join('semestres', 'classe_semestre.code_semestre', '=', 'semestres.code_semestre')
+                ->where('classes.code_classe', $inscription->code_classe)
+                ->select('semestres.*')
+                ->get();
+            
+            if ($semestres->isEmpty()) {
+                $this->command->warn("  Aucun semestre trouvé pour la classe {$inscription->code_classe}");
+                continue;
             }
             
-            foreach ($selectedStudents as $etudiantId) {
-                try {
-                    DB::table('notes')->updateOrInsert(
-                        [
-                            'code_enseignement' => $enseignement->code_enseignement,
-                            'id_etudiant' => $etudiantId,
-                        ],
-                        [
-                            'mcc' => rand(8, 20),
-                            'examen' => rand(6, 20),
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]
-                    );
-                    $noteCount++;
-                } catch (\Exception $e) {
-                    echo "Error creating note for enseignement {$enseignement->code_enseignement}: " . $e->getMessage() . "\n";
+            foreach ($semestres as $semestre) {
+                $this->command->info("  Semestre: {$semestre->code_semestre} - {$semestre->name}");
+                
+                // Get UEs for this semester
+                $ues = DB::table('ues')
+                    ->where('code_semestre', $semestre->code_semestre)
+                    ->get();
+                
+                foreach ($ues as $ue) {
+                    $this->command->info("    UE: {$ue->code_ue} - {$ue->name}");
+                    
+                    // Get matieres for this UE
+                    $matieres = DB::table('matieres')
+                        ->where('code_ue', $ue->code_ue)
+                        ->get();
+                    
+                    foreach ($matieres as $matiere) {
+                        $this->command->info("      Matière: {$matiere->code_matiere} - {$matiere->name}");
+                        
+                        // Get enseignements for this matiere
+                        $enseignements = DB::table('enseignements')
+                            ->where('code_matiere', $matiere->code_matiere)
+                            ->get();
+                        
+                        foreach ($enseignements as $enseignement) {
+                            $this->command->info("        Enseignement: {$enseignement->code_enseignement}");
+                            
+                            // Create note for this student in this enseignement
+                            try {
+                                DB::table('notes')->updateOrInsert(
+                                    [
+                                        'code_enseignement' => $enseignement->code_enseignement,
+                                        'id_etudiant' => $inscription->etudiant_id,
+                                    ],
+                                    [
+                                        'mcc' => rand(8, 20),
+                                        'examen' => rand(6, 20),
+                                        'created_at' => now(),
+                                        'updated_at' => now(),
+                                    ]
+                                );
+                                $noteCount++;
+                            } catch (\Exception $e) {
+                                $this->command->error("        Erreur création note: " . $e->getMessage());
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -56,7 +56,7 @@ export class Profs implements OnInit {
     name: '',
     email: '',
     role: 'Prof',
-    speciality: '',
+    specialite_id: undefined,
     created_at: '',
     updated_at: ''
   };
@@ -100,7 +100,7 @@ export class Profs implements OnInit {
     this.cols = [
       { field: 'id', header: 'ID' },
       { field: 'name', header: 'Name' },
-      { field: 'speciality', header: 'Speciality' },
+      { field: 'specialite_id', header: 'Specialite' },
       { field: 'email', header: 'Email' },
     ];
 
@@ -117,7 +117,7 @@ export class Profs implements OnInit {
       name: '',
       email: '',
       role: 'Prof',
-      speciality: '',
+      specialite_id: undefined,
       created_at: '',
       updated_at: ''
     };
@@ -178,7 +178,7 @@ export class Profs implements OnInit {
       name: '',
       email: '',
       role: 'Prof',
-      speciality: '',
+      specialite_id: undefined,
       created_at: '',
       updated_at: ''
     };

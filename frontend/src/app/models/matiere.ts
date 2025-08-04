@@ -1,3 +1,7 @@
+import { Ue } from './ue';
+import { Enseignement } from './enseignement';
+import { Note } from './note';
+
 export class Matiere {
     id?: number; // Primary key
     code_matiere!: string;
@@ -9,8 +13,8 @@ export class Matiere {
     created_at?: string;
     updated_at?: string;
     
-    // Relationships (populated when needed)
-    ue?: any;
-    enseignements?: any[]; // Matiere has many Enseignements
-    notes?: any[]; // Through Enseignements
+  // Relationships (populated when needed)
+  ue?: Ue;
+  enseignements?: Enseignement[]; // Matiere has many Enseignements
+  notes?: Note[]; // Through Enseignements
 }

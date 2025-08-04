@@ -85,7 +85,7 @@ export class AppMenu implements OnInit, OnDestroy {
             {
                 label: 'Accueil',
                 items: [
-                { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/etudiant/dashboard'] }
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/app/etudiant/dashboard'] }
                 ]
             },
             ];
@@ -254,22 +254,22 @@ export class AppMenu implements OnInit, OnDestroy {
                     { 
                         label: `Mes Notes${stats?.notes_count ? ` (${stats.notes_count})` : ''}`, 
                         icon: 'pi pi-fw pi-star', 
-                        routerLink: ['/note'] 
+                        routerLink: ['/app/etudiant/notes'] 
                     },
                     { 
                         label: `Mes Absences${stats?.absences_count ? ` (${stats.absences_count})` : ''}`, 
                         icon: 'pi pi-fw pi-times-circle', 
-                        routerLink: ['/absence'] 
+                        routerLink: ['/app/etudiant/absences'] 
                     },
                     { 
                         label: 'Mon Bulletin', 
                         icon: 'pi pi-fw pi-file-pdf', 
-                        routerLink: ['/dashboard/etudiant/bulletin'] 
+                        routerLink: ['/app/etudiant/bulletin'] 
                     },
                     { 
                         label: 'Mes Statistiques', 
                         icon: 'pi pi-fw pi-chart-pie', 
-                        routerLink: ['/dashboard/etudiant/stats'] 
+                        routerLink: ['/app/etudiant/stats'] 
                     },
                 ]
             },

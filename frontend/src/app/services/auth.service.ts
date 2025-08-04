@@ -96,7 +96,14 @@ export class AuthService {
   /**
    * Récupérer les informations de l'utilisateur connecté
    */
-  getCurrentUser(): Observable<User> {
+  getCurrentUser(): User | null {
+    return this.getCurrentUserValue();
+  }
+
+  /**
+   * Récupérer les informations de l'utilisateur connecté depuis l'API
+   */
+  fetchCurrentUser(): Observable<User> {
     return this.http.get<User>(`${this.baseUrl}/user`);
   }
 

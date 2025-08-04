@@ -53,11 +53,11 @@
     color: #ef4444;
 }
 
-.p-dropdown {
+.p-select {
     width: 100%;
 }
 
-.p-dropdown:focus {
+.p-select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem var(--primary-color-alpha);
 }

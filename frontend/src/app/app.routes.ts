@@ -175,6 +175,46 @@ export const appRoutes: Routes = [
                 
             },
             
+
+
+
+            //Etudiant Routes
+             // User Management Routes
+             { 
+                path: 'etudiant', 
+                children: [
+                    { 
+                        path: 'notes', 
+                        loadComponent: async () => {
+                            const m = await import('./layouts/pages/Users/Etudiants/mes-notes/mes-notes.component');
+                            return m.MesNotesComponent;
+                        }
+                    },
+
+                    { 
+                        path: 'absences', 
+                        loadComponent: async () => {
+                            const m = await import('./layouts/pages/Users/Etudiants/mes-absences/mes-absences.component');
+                            return m.MesAbsencesComponent;
+                        }
+                    },
+                    {
+                        path: 'bulletins', 
+                        loadComponent: async () => {
+                            const m = await import('./layouts/pages/Users/Etudiants/mon-bulletin/mon-bulletin.component');
+                            return m.MonBulletinComponent;
+                        }
+                    },
+                    { 
+                        path: 'dashboard', 
+                        loadComponent: async () => {
+                            const m = await import('./layouts/pages/Users/Etudiants/dashboard/dashboard.component');
+                            return m.EtudiantDashboardComponent;
+                        }
+                    },
+                ]
+                
+            },
             
             // Admin Additional Routes
             { 
