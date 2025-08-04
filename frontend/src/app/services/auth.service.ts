@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, map } from 'rxjs';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../environments/environment';
 
 export interface User {
@@ -48,7 +49,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     // Vérifier si un token existe dans le localStorage au démarrage
     this.loadStoredAuth();
@@ -123,7 +125,10 @@ export class AuthService {
    * Obtenir le token actuel
    */
   getToken(): string | null {
-    return this.tokenSubject.value || localStorage.getItem('auth_token');
+    if (isPlatformBrowser(this.platformId)) {
+      return this.tokenSubject.value || sessionStorage.getItem('auth_token');
+    }
+    return this.tokenSubject.value;
   }
 
   /**
@@ -173,8 +178,13 @@ export class AuthService {
    * Sauvegarder les données d'authentification
    */
   private setAuthData(authResponse: AuthResponse): void {
-    localStorage.setItem('auth_token', authResponse.access_token);
-    localStorage.setItem('current_user', JSON.stringify(authResponse.user));
+    console.log('Setting auth data:', authResponse);
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.setItem('auth_token', authResponse.access_token);
+      sessionStorage.setItem('current_user', JSON.stringify(authResponse.user));
+      console.log('Token stored in sessionStorage:', authResponse.access_token);
+      console.log('User stored in sessionStorage:', authResponse.user);
+    }
     
     this.tokenSubject.next(authResponse.access_token);
     this.currentUserSubject.next(authResponse.user);
@@ -184,29 +194,52 @@ export class AuthService {
    * Supprimer les données d'authentification
    */
   private clearAuthData(): void {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('current_user');
+    console.log('Clearing auth data');
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.removeItem('auth_token');
+      sessionStorage.removeItem('current_user');
+      console.log('Auth data cleared from sessionStorage');
+    }
     
     this.tokenSubject.next(null);
     this.currentUserSubject.next(null);
   }
 
   /**
+   * Force logout and clear all session data
+   */
+  forceLogout(): void {
+    this.clearAuthData();
+    this.router.navigate(['/login']);
+  }
+
+  /**
    * Charger les données d'authentification stockées
    */
   private loadStoredAuth(): void {
-    const token = localStorage.getItem('auth_token');
-    const userStr = localStorage.getItem('current_user');
+    if (!isPlatformBrowser(this.platformId)) {
+      console.log('Server side rendering, skipping sessionStorage access');
+      return; // Skip localStorage access on server side
+    }
+    
+    const token = sessionStorage.getItem('auth_token');
+    const userStr = sessionStorage.getItem('current_user');
+    
+    console.log('Loading stored auth - token:', token);
+    console.log('Loading stored auth - userStr:', userStr);
     
     if (token && userStr) {
       try {
         const user = JSON.parse(userStr);
+        console.log('Loaded user from sessionStorage:', user);
         this.tokenSubject.next(token);
         this.currentUserSubject.next(user);
       } catch (error) {
         console.error('Erreur lors du chargement des données d\'authentification:', error);
         this.clearAuthData();
       }
+    } else {
+      console.log('No stored auth data found');
     }
   }
 }

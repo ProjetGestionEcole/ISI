@@ -11,7 +11,7 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="mentions()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','description']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedMentions" selectionMode="multiple" [rowHover]="true" dataKey="id">
+            <p-table #dt [value]="mentions()" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['appreciation']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entrées" [(selection)]="selectedMentions" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <h5 class="m-0">Gestion des Mentions</h5>
@@ -27,10 +27,9 @@
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                         </th>
                         <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
-                        <th pSortableColumn="name">Nom <p-sortIcon field="name"></p-sortIcon></th>
-                        <th pSortableColumn="note_min">Note Min <p-sortIcon field="note_min"></p-sortIcon></th>
-                        <th pSortableColumn="note_max">Note Max <p-sortIcon field="note_max"></p-sortIcon></th>
-                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="appreciation">Appréciation <p-sortIcon field="appreciation"></p-sortIcon></th>
+                        <th pSortableColumn="min_moyenne">Moyenne Min <p-sortIcon field="min_moyenne"></p-sortIcon></th>
+                        <th pSortableColumn="max_moyenne">Moyenne Max <p-sortIcon field="max_moyenne"></p-sortIcon></th>
                         <th></th>
                     </tr>
                 </ng-template>
@@ -40,10 +39,9 @@
                             <p-tableCheckbox [value]="mention"></p-tableCheckbox>
                         </td>
                         <td>{{mention.id}}</td>
-                        <td>{{mention.name}}</td>
-                        <td>{{mention.note_min}}</td>
-                        <td>{{mention.note_max}}</td>
-                        <td>{{mention.description}}</td>
+                        <td>{{mention.appreciation}}</td>
+                        <td>{{mention.min_moyenne}}</td>
+                        <td>{{mention.max_moyenne}}</td>
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editMention(mention)"></button>
@@ -58,21 +56,17 @@
         <p-dialog [(visible)]="mentionDialog" [style]="{width: '450px'}" header="Détails de la Mention" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
                 <div class="field">
-                    <label for="name">Nom</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="mention.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !mention.name}"/>
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !mention.name">Le nom est requis.</small>
+                    <label for="appreciation">Appréciation</label>
+                    <input type="text" pInputText id="appreciation" [(ngModel)]="mention.appreciation" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !mention.appreciation}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !mention.appreciation">L'appréciation est requise.</small>
                 </div>
                 <div class="field">
-                    <label for="note_min">Note Minimum</label>
-                    <p-inputNumber id="note_min" [(ngModel)]="mention.note_min" mode="decimal" [showButtons]="true" [min]="0" [max]="20"></p-inputNumber>
+                    <label for="min_moyenne">Moyenne Minimum</label>
+                    <p-inputNumber id="min_moyenne" [(ngModel)]="mention.min_moyenne" mode="decimal" [showButtons]="true" [min]="0" [max]="20" [minFractionDigits]="2"></p-inputNumber>
                 </div>
                 <div class="field">
-                    <label for="note_max">Note Maximum</label>
-                    <p-inputNumber id="note_max" [(ngModel)]="mention.note_max" mode="decimal" [showButtons]="true" [min]="0" [max]="20"></p-inputNumber>
-                </div>
-                <div class="field">
-                    <label for="description">Description</label>
-                    <textarea id="description" pInputTextarea [(ngModel)]="mention.description" rows="3" cols="20"></textarea>
+                    <label for="max_moyenne">Moyenne Maximum</label>
+                    <p-inputNumber id="max_moyenne" [(ngModel)]="mention.max_moyenne" mode="decimal" [showButtons]="true" [min]="0" [max]="20" [minFractionDigits]="2"></p-inputNumber>
                 </div>
             </ng-template>
 

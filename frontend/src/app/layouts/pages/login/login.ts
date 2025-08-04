@@ -46,7 +46,7 @@ export class Login {
     ) {
         // Rediriger si déjà connecté
         if (this.authService.isAuthenticated()) {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/app']);
         }
     }
 
@@ -84,9 +84,9 @@ export class Login {
                 this.isLoading = false;
                 this.successMessage = 'Connexion réussie ! Redirection...';
                 
-                // Rediriger vers le dashboard après un court délai
+                // Rediriger vers le app après un court délai
                 setTimeout(() => {
-                    this.router.navigate(['/dashboard']);
+                    this.router.navigate(['/app']);
                 }, 1000);
             },
             error: (error) => {

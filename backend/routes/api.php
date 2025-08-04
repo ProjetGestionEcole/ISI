@@ -24,6 +24,7 @@ use App\Http\Controllers\V1\EtudiantController;
 use App\Http\Controllers\V1\ProfController;
 use App\Http\Controllers\V1\AdminController;
 use App\Http\Controllers\V1\ParentController;
+use App\Http\Controllers\V1\RoleBasedDataController;
 
 // ROUTES D'AUTHENTIFICATION (publiques)
 
@@ -88,6 +89,43 @@ Route::prefix('v1')->group(function () {
         Route::get('/parents/{id}/children-notes', [ParentController::class, 'getChildrenNotes']);
         Route::get('/parents/{id}/children-absences', [ParentController::class, 'getChildrenAbsences']);
         Route::get('/parents/relationships', [ParentController::class, 'getRelationships']);
+        
+        // Role-based authenticated user endpoints
+        // Professor endpoints
+        Route::get('/profs/my/enseignements', [ProfController::class, 'getMyEnseignements']);
+        Route::get('/profs/my/matieres', [ProfController::class, 'getMyMatieres']);
+        Route::get('/profs/my/notes', [ProfController::class, 'getMyNotes']);
+        Route::get('/profs/my/absences', [ProfController::class, 'getMyAbsences']);
+        Route::get('/profs/my/dashboard-stats', [ProfController::class, 'getMyDashboardStats']);
+        
+        // Student endpoints
+        Route::get('/etudiants/my/notes', [EtudiantController::class, 'getMyNotes']);
+        Route::get('/etudiants/my/absences', [EtudiantController::class, 'getMyAbsences']);
+        Route::get('/etudiants/my/inscriptions', [EtudiantController::class, 'getMyInscriptions']);
+        Route::get('/etudiants/my/dashboard-stats', [EtudiantController::class, 'getMyDashboardStats']);
+        
+        // Parent endpoints
+        Route::get('/parents/my/children', [ParentController::class, 'getMyChildren']);
+        Route::get('/parents/my/children-notes', [ParentController::class, 'getMyChildrenNotes']);
+        Route::get('/parents/my/children-absences', [ParentController::class, 'getMyChildrenAbsences']);
+        Route::get('/parents/my/dashboard-stats', [ParentController::class, 'getMyDashboardStats']);
+        
+        // Admin endpoints
+        Route::get('/admins/my/dashboard-stats', [AdminController::class, 'getMyDashboardStats']);
+        
+        // UNIFIED DASHBOARD STATS ROUTE (role-based)
+        Route::get('/my/dashboard-stats', [RoleBasedDataController::class, 'getDashboardStats']);
+        
+        // Debug endpoint
+        Route::get('/debug/database-data', [RoleBasedDataController::class, 'debugDatabaseData']);
+        
+        // Role-based data endpoints
+        Route::get('/my/enseignements', [RoleBasedDataController::class, 'getMyEnseignements']);
+        Route::get('/my/matieres', [RoleBasedDataController::class, 'getMyMatieres']);
+        Route::get('/my/notes', [RoleBasedDataController::class, 'getMyNotes']);
+        Route::get('/my/absences', [RoleBasedDataController::class, 'getMyAbsences']);
+        Route::get('/my/inscriptions', [RoleBasedDataController::class, 'getMyInscriptions']);
+        Route::get('/my/children', [RoleBasedDataController::class, 'getMyChildren']);
         
         // ROUTES MÉTIER (protégées)
         /*Route::apiResource('/specialites', SpecialiteController::class);

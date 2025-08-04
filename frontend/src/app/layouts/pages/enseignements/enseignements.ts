@@ -53,7 +53,9 @@ export class Enseignements implements OnInit {
   ngOnInit() {
     this.enseignementServices.getAll().subscribe({
       next: (data: Enseignement[]) => {
-        this.enseignements.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.enseignements.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -103,7 +105,9 @@ export class Enseignements implements OnInit {
             const index = _enseignements.findIndex(e => e.id === this.enseignement.id);
             if (index !== -1) {
               _enseignements[index] = updatedEnseignement;
-              this.enseignements.set(_enseignements);
+              // Sort the array after update to maintain order
+              const sortedEnseignements = _enseignements.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.enseignements.set(sortedEnseignements);
             }
             this.messageService.add({
               severity: 'success',
@@ -126,8 +130,10 @@ export class Enseignements implements OnInit {
       } else {
         this.enseignementServices.store(this.enseignement).subscribe({
           next: (newEnseignement) => {
-            const _enseignements = this.enseignements();
-            this.enseignements.set([..._enseignements, newEnseignement]);
+            const _enseignements = [...this.enseignements(), newEnseignement];
+            // Sort the array after adding new item to maintain order
+            const sortedEnseignements = _enseignements.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.enseignements.set(sortedEnseignements);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

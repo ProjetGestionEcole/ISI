@@ -56,7 +56,9 @@ export class AnneesScolaires implements OnInit {
   ngOnInit() {
     this.anneeScolaireServices.getAll().subscribe({
       next: (data: AnneeScolaire[]) => {
-        this.anneesScolaires.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.anneesScolaires.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -101,7 +103,9 @@ export class AnneesScolaires implements OnInit {
             const index = _anneesScolaires.findIndex(a => a.id === this.anneeScolaire.id);
             if (index !== -1) {
               _anneesScolaires[index] = updatedAnneeScolaire;
-              this.anneesScolaires.set(_anneesScolaires);
+              // Sort the array after update to maintain order
+              const sortedAnneesScolaires = _anneesScolaires.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.anneesScolaires.set(sortedAnneesScolaires);
             }
             this.messageService.add({
               severity: 'success',
@@ -124,8 +128,10 @@ export class AnneesScolaires implements OnInit {
       } else {
         this.anneeScolaireServices.store(this.anneeScolaire).subscribe({
           next: (newAnneeScolaire) => {
-            const _anneesScolaires = this.anneesScolaires();
-            this.anneesScolaires.set([..._anneesScolaires, newAnneeScolaire]);
+            const _anneesScolaires = [...this.anneesScolaires(), newAnneeScolaire];
+            // Sort the array after adding new item to maintain order
+            const sortedAnneesScolaires = _anneesScolaires.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.anneesScolaires.set(sortedAnneesScolaires);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

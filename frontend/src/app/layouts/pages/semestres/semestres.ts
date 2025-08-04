@@ -53,7 +53,9 @@ export class Semestres implements OnInit {
   ngOnInit() {
     this.semestreServices.getAll().subscribe({
       next: (data: Semestre[]) => {
-        this.semestres.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.semestres.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -101,7 +103,9 @@ export class Semestres implements OnInit {
             const index = _semestres.findIndex(s => s.id === this.semestre.id);
             if (index !== -1) {
               _semestres[index] = updatedSemestre;
-              this.semestres.set(_semestres);
+              // Sort the array after update to maintain order
+              const sortedSemestres = _semestres.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.semestres.set(sortedSemestres);
             }
             this.messageService.add({
               severity: 'success',
@@ -124,8 +128,10 @@ export class Semestres implements OnInit {
       } else {
         this.semestreServices.store(this.semestre).subscribe({
           next: (newSemestre) => {
-            const _semestres = this.semestres();
-            this.semestres.set([..._semestres, newSemestre]);
+            const _semestres = [...this.semestres(), newSemestre];
+            // Sort the array after adding new item to maintain order
+            const sortedSemestres = _semestres.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.semestres.set(sortedSemestres);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

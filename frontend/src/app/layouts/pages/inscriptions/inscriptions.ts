@@ -55,7 +55,9 @@ export class Inscriptions implements OnInit {
   ngOnInit() {
     this.inscriptionServices.getAll().subscribe({
       next: (data: Inscription[]) => {
-        this.inscriptions.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.inscriptions.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -100,7 +102,9 @@ export class Inscriptions implements OnInit {
             const index = _inscriptions.findIndex(i => i.id === this.inscription.id);
             if (index !== -1) {
               _inscriptions[index] = updatedInscription;
-              this.inscriptions.set(_inscriptions);
+              // Sort the array after update to maintain order
+              const sortedInscriptions = _inscriptions.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.inscriptions.set(sortedInscriptions);
             }
             this.messageService.add({
               severity: 'success',
@@ -123,8 +127,10 @@ export class Inscriptions implements OnInit {
       } else {
         this.inscriptionServices.store(this.inscription).subscribe({
           next: (newInscription) => {
-            const _inscriptions = this.inscriptions();
-            this.inscriptions.set([..._inscriptions, newInscription]);
+            const _inscriptions = [...this.inscriptions(), newInscription];
+            // Sort the array after adding new item to maintain order
+            const sortedInscriptions = _inscriptions.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.inscriptions.set(sortedInscriptions);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

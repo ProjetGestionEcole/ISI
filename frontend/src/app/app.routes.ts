@@ -1,47 +1,227 @@
 import { Routes } from '@angular/router';
-import { AppLayout } from './layouts/app-layout/app-layout'; // ← bon chemin ici
-import { Crud } from './layouts/pages/crud/crud';
-import { Specialites } from './layouts/pages/specialites/specialites';
+import { AppLayout } from './layouts/app-layout/app-layout';
 import { AuthGuard } from './guards/auth.guard';
 import { GuestGuard } from './guards/guest.guard';
+// All components will be lazy loaded for better performance
 
 export const appRoutes: Routes = [
     // Authentication routes (guest only)
     {
         path: 'login',
-        loadComponent: () => import('./layouts/pages/login/login').then(m => m.Login),
+        loadComponent: async () => {
+            const m = await import('./layouts/pages/login/login');
+            return m.Login;
+        },
         canActivate: [GuestGuard]
     },
     {
         path: 'register',
-        loadComponent: () => import('./layouts/pages/register/register').then(m => m.RegisterComponent),
+        loadComponent: async () => {
+            const m = await import('./layouts/pages/register/register');
+            return m.RegisterComponent;
+        },
         canActivate: [GuestGuard]
     },
     
+
+
     // Protected dashboard routes (authenticated users only)
     {
-        path: 'dashboard',
+        path: 'app',
         component: AppLayout,
         canActivate: [AuthGuard],
         children: [
-            { path: '', redirectTo: 'crud', pathMatch: 'full' },
-            { path: 'crud', component: Crud},
-            { path: 'specialite', component: Specialites},
-            { path: 'niveau', loadComponent: () => import('./layouts/pages/niveaux/niveaux').then(m => m.Niveaux) },
-            { path: 'matiere', loadComponent: () => import('./layouts/pages/matieres/matieres').then(m => m.Matieres) },
-            { path: 'classe', loadComponent: () => import('./layouts/pages/classes/classes').then(m => m.Classes) },
-            { path: 'mention', loadComponent: () => import('./layouts/pages/mentions/mentions').then(m => m.Mentions) },
-            { path: 'semestre', loadComponent: () => import('./layouts/pages/semestres/semestres').then(m => m.Semestres) },
-            { path: 'ue', loadComponent: () => import('./layouts/pages/ues/ues').then(m => m.Ues) },
-            { path: 'note', loadComponent: () => import('./layouts/pages/notes/notes').then(m => m.Notes) },
-            { path: 'absence', loadComponent: () => import('./layouts/pages/absences/absences').then(m => m.Absences) },
-            { path: 'annee-scolaire', loadComponent: () => import('./layouts/pages/annees-scolaires/annees-scolaires').then(m => m.AnneesScolaires) },
-            { path: 'enseignement', loadComponent: () => import('./layouts/pages/enseignements/enseignements').then(m => m.Enseignements) },
-            { path: 'inscription', loadComponent: () => import('./layouts/pages/inscriptions/inscriptions').then(m => m.Inscriptions) },
-            { path: 'leparent', loadComponent: () => import('./layouts/pages/leparents/leparents').then(m => m.Leparents) },
+            { 
+                path: '', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/dashboard/role-dashboard.component');
+                    return m.RoleDashboard;
+                },
+                pathMatch: 'full'
+            },
+            { 
+                path: 'crud', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/crud/crud');
+                    return m.Crud;
+                }
+            },
+            { 
+                path: 'specialite', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/specialites/specialites');
+                    return m.Specialites;
+                }
+            },
+            { 
+                path: 'niveau', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/niveaux/niveaux');
+                    return m.Niveaux;
+                }
+            },
+            { 
+                path: 'matiere', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/matieres/matieres');
+                    return m.Matieres;
+                }
+            },
+            { 
+                path: 'classe', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/classes/classes');
+                    return m.Classes;
+                }
+            },
+            { 
+                path: 'mention', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/mentions/mentions');
+                    return m.Mentions;
+                }
+            },
+            { 
+                path: 'semestre', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/semestres/semestres');
+                    return m.Semestres;
+                }
+            },
+            { 
+                path: 'ue', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/ues/ues');
+                    return m.Ues;
+                }
+            },
+            { 
+                path: 'note', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/notes/notes');
+                    return m.Notes;
+                }
+            },
+            { 
+                path: 'absence', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/absences/absences');
+                    return m.Absences;
+                }
+            },
+            { 
+                path: 'annee-scolaire', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/annees-scolaires/annees-scolaires');
+                    return m.AnneesScolaires;
+                }
+            },
+            { 
+                path: 'enseignement', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/enseignements/enseignements');
+                    return m.Enseignements;
+                }
+            },
+            { 
+                path: 'inscription', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/inscriptions/inscriptions');
+                    return m.Inscriptions;
+                }
+            },
+            { 
+                path: 'leparent', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/leparents/leparents');
+                    return m.Leparents;
+                }
+            },
+
+            // User Management Routes
+            { 
+                path: 'management', 
+                children: [
+                    { 
+                        path: 'etudiants', 
+                        loadComponent: async () => {
+                            const m = await import('./layouts/pages/Users/Admins/user-management/etudiants/etudiants');
+                            return m.Etudiants;
+                        }
+                    },
+
+                    { 
+                        path: 'profs', 
+                        loadComponent: async () => {
+                            const m = await import('./layouts/pages/Users/Admins/user-management/profs/profs');
+                            return m.Profs;
+                        }
+                    },
+                    {
+                        path: 'parents', 
+                        loadComponent: async () => {
+                            const m = await import('./layouts/pages/leparents/leparents');
+                            return m.Leparents;
+                        }
+                    },
+                    { 
+                        path: 'admins', 
+                        loadComponent: async () => {
+                            const m = await import('./layouts/pages/Users/Admins/user-management/admins/admins');
+                            return m.Admins;
+                        }
+                    },
+                ]
+                
+            },
+            
+            
+            // Admin Additional Routes
+            { 
+                path: 'parent-relations', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/parent-relations/parent-relations');
+                    return m.ParentRelations;
+                }
+            },
+            { 
+                path: 'AdminDashboard', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/Users/Admins/dashboard/admin-dashboard.component');
+                    return m.AdminDashboard;
+                },
+                data: { title: 'Dashboard Admin' }
+            },
+            { 
+                path: 'prof-dashboard', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/prof/prof-dashboard.component');
+                    return m.ProfDashboard;
+                },
+                data: { title: 'Dashboard Professeur' }
+            },
+            { 
+                path: 'etudiant-dashboard', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/etudiant/etudiant');
+                    return m.EtudiantDashboard;
+                },
+                data: { title: 'Dashboard Étudiant' }
+            },
+            { 
+                path: 'parent-dashboard', 
+                loadComponent: async () => {
+                    const m = await import('./layouts/pages/dashboard/parent-dashboard.component');
+                    return m.ParentDashboard;
+                },
+                data: { title: 'Dashboard Parent' }
+            }
         ]
-    },
+
     
+    },
+            // Admin Routes avec lazy loading
+            
     // Default redirect
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     

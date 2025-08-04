@@ -53,7 +53,9 @@ export class Ues implements OnInit {
   ngOnInit() {
     this.ueServices.getAll().subscribe({
       next: (data: Ue[]) => {
-        this.ues.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.ues.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -98,7 +100,9 @@ export class Ues implements OnInit {
             const index = _ues.findIndex(u => u.id === this.ue.id);
             if (index !== -1) {
               _ues[index] = updatedUe;
-              this.ues.set(_ues);
+              // Sort the array after update to maintain order
+              const sortedUes = _ues.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.ues.set(sortedUes);
             }
             this.messageService.add({
               severity: 'success',
@@ -121,8 +125,10 @@ export class Ues implements OnInit {
       } else {
         this.ueServices.store(this.ue).subscribe({
           next: (newUe) => {
-            const _ues = this.ues();
-            this.ues.set([..._ues, newUe]);
+            const _ues = [...this.ues(), newUe];
+            // Sort the array after adding new item to maintain order
+            const sortedUes = _ues.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.ues.set(sortedUes);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

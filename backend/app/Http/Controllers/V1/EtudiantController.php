@@ -4,15 +4,52 @@ namespace App\Http\Controllers\V1;
 
 use App\Models\Etudiant;
 use App\Models\User;
+use App\Models\Note;
+use App\Models\Absence;
+use App\Models\Inscription;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 
 class EtudiantController extends Controller
 {
 
+    protected function successResponse($data, $message = 'Success', $code = 200): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data
+        ], $code);
+    }
+
+    /**
+     * Return an error JSON response
+     */
+    protected function errorResponse($message = 'Error', $code = 400): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => null
+        ], $code);
+    }
+
+    /**
+     * Return a validation error JSON response
+     */
+    protected function validationErrorResponse(ValidationException $e): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur de validation',
+            'data' => null,
+            'errors' => $e->errors()
+        ], 422);
+    }
     /**
      * Display a listing of all students
      */
@@ -157,6 +194,142 @@ class EtudiantController extends Controller
             return $this->successResponse($statistics, 'Statistiques de l\'étudiant récupérées avec succès');
         } catch (\Exception $e) {
             return $this->errorResponse('Erreur lors de la récupération des statistiques', 500);
+        }
+    }
+
+    // ========== AUTHENTICATED USER ENDPOINTS ==========
+
+    /**
+     * Get authenticated student's notes
+     */
+    public function getMyNotes(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Etudiant') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            $notes = Note::where('id_etudiant', $user->id)
+                ->with(['enseignement.matiere', 'enseignement.prof'])
+                ->get();
+
+            return $this->successResponse($notes, 'Mes notes récupérées avec succès');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erreur lors de la récupération des notes', 500);
+        }
+    }
+
+    /**
+     * Get authenticated student's absences
+     */
+    public function getMyAbsences(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Etudiant') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            $absences = Absence::where('etudiant_id', $user->id)
+                ->with(['matiere', 'prof'])
+                ->get();
+
+            return $this->successResponse($absences, 'Mes absences récupérées avec succès');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erreur lors de la récupération des absences', 500);
+        }
+    }
+
+    /**
+     * Get authenticated student's inscriptions
+     */
+    public function getMyInscriptions(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Etudiant') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            $inscriptions = Inscription::where('etudiant_id', $user->id)
+                ->with(['classe', 'anneeScolaire'])
+                ->get();
+
+            return $this->successResponse($inscriptions, 'Mes inscriptions récupérées avec succès');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erreur lors de la récupération des inscriptions', 500);
+        }
+    }
+
+    /**
+     * Get authenticated student's dashboard statistics
+     */
+    public function getMyDashboardStats(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user || $user->role !== 'Etudiant') {
+                return $this->errorResponse('Accès non autorisé', 403);
+            }
+
+            // Add logging for debugging
+
+            $notesCount = Note::where('id_etudiant', $user->id)->count();
+            $absencesCount = Absence::where('etudiant_id', $user->id)->count();
+            $inscriptionsCount = Inscription::where('etudiant_id', $user->id)->count();
+            
+            // Get average grade (calculate from mcc and examen)
+            $notes = Note::where('id_etudiant', $user->id)->get();
+            $averageGrade = 0;
+            if ($notes->count() > 0) {
+                $totalGrade = 0;
+                $gradeCount = 0;
+                foreach ($notes as $note) {
+                    // Calculate final grade: 40% MCC + 60% Examen
+                    if ($note->mcc !== null && $note->examen !== null) {
+                        $finalGrade = ($note->mcc * 0.4) + ($note->examen * 0.6);
+                        $totalGrade += $finalGrade;
+                        $gradeCount++;
+                    }
+                }
+                if ($gradeCount > 0) {
+                    $averageGrade = $totalGrade / $gradeCount;
+                }
+            }
+            
+            // Get current class info with better error handling
+            $currentInscription = null;
+            $currentClassName = null;
+            
+            try {
+                $currentInscription = Inscription::where('etudiant_id', $user->id)
+                    ->with('classe')
+                    ->latest()
+                    ->first();
+                    
+                if ($currentInscription && $currentInscription->classe) {
+                    $currentClassName = $currentInscription->classe->nom_classe ?? null;
+                }
+            } catch (\Exception $e) {
+            }
+            
+            $stats = [
+                'notes_count' => $notesCount ?? 0,
+                'absences_count' => $absencesCount ?? 0,
+                'inscriptions_count' => $inscriptionsCount ?? 0,
+                'average_grade' => round($averageGrade ?? 0, 2),
+                'current_class' => $currentClassName,
+            ];
+
+            return $this->successResponse($stats, 'Mes statistiques récupérées avec succès');
+        } catch (\Exception $e) {
+            
+            return $this->errorResponse('Erreur lors de la récupération des statistiques: ' . $e->getMessage(), 500);
         }
     }
 }

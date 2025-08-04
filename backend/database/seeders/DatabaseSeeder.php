@@ -44,6 +44,9 @@ class DatabaseSeeder extends Seeder
             InscriptionSeeder::class,
             EnseignementSeeder::class,
             NoteSeeder::class,
+            
+            // Create parent-child relationships
+            LeparentSeeder::class,
         ]);
     }
 }

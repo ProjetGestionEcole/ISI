@@ -23,17 +23,17 @@ class Etudiant extends User
     // Relationships
     public function notes(): HasMany
     {
-        return $this->hasMany(Note::class, 'user_id');
+        return $this->hasMany(Note::class, 'id_etudiant');
     }
 
     public function absences(): HasMany
     {
-        return $this->hasMany(Absence::class, 'user_id');
+        return $this->hasMany(Absence::class, 'etudiant_id');
     }
 
     public function inscriptions(): HasMany
     {
-        return $this->hasMany(Inscription::class, 'user_id');
+        return $this->hasMany(Inscription::class, 'etudiant_id');
     }
 
     public function parentRelations(): HasMany
