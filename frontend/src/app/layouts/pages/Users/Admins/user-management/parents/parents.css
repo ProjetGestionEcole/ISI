@@ -1,0 +1,38 @@
+/* Dashboard Parents Styles */
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.1);
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.border-round {
+  border-radius: 6px;
+}
+
+/* Loading skeleton styles */
+p-skeleton {
+  border-radius: 4px;
+}
+
+/* Button styles */
+p-button {
+  transition: all 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .text-xl {
+    font-size: 1.1rem;
+  }
+}
