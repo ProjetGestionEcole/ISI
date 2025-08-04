@@ -160,8 +160,8 @@ export const appRoutes: Routes = [
                     {
                         path: 'parents', 
                         loadComponent: async () => {
-                            const m = await import('./layouts/pages/leparents/leparents');
-                            return m.Leparents;
+                            const m = await import('./layouts/pages/Users/Admins/user-management/parents/parents');
+                            return m.Parents;
                         }
                     },
                     { 
