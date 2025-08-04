@@ -1,0 +1,297 @@
+// Document Upload Component Styles - Sakai Theme Compatible
+
+.document-upload-container {
+    :host ::ng-deep {
+        .p-fileupload {
+            .p-fileupload-buttonbar {
+                background: var(--surface-b);
+                border: 1px solid var(--surface-border);
+                border-radius: var(--border-radius);
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .p-fileupload-content {
+                border: 2px dashed var(--surface-border);
+                border-radius: var(--border-radius);
+                background: var(--surface-a);
+                padding: 0;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    border-color: var(--primary-color);
+                    background: var(--primary-50);
+                }
+
+                &.p-fileupload-highlight {
+                    border-color: var(--primary-color);
+                    background: var(--primary-50);
+                }
+            }
+
+            .p-button {
+                margin-right: 0.5rem;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}
+
+.upload-header {
+    .p-tag {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+.upload-content {
+    padding: 1.5rem;
+    min-height: 200px;
+}
+
+.drop-zone {
+    border: 2px dashed var(--surface-300);
+    border-radius: var(--border-radius);
+    background: var(--surface-50);
+    transition: all 0.3s ease;
+    margin: 1rem 0;
+
+    &:hover {
+        border-color: var(--primary-color);
+        background: var(--primary-50);
+    }
+
+    i {
+        color: var(--surface-400);
+        transition: color 0.3s ease;
+    }
+
+    &:hover i {
+        color: var(--primary-color);
+    }
+
+    h5 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text-color);
+    }
+
+    p {
+        margin: 0 0 1rem 0;
+        color: var(--text-color-secondary);
+    }
+}
+
+.upload-constraints {
+    color: var(--text-color-secondary);
+    line-height: 1.5;
+
+    div {
+        margin-bottom: 0.25rem;
+    }
+}
+
+.selected-files {
+    h6 {
+        color: var(--text-color);
+        margin: 0 0 1rem 0;
+        font-weight: 600;
+    }
+}
+
+.files-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.file-item {
+    background: var(--surface-a);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: var(--surface-b);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .file-info {
+        .file-name {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .file-size {
+            font-size: 0.75rem;
+        }
+    }
+
+    i {
+        color: var(--primary-color);
+        
+        &.pi-file-pdf {
+            color: #dc3545;
+        }
+        
+        &.pi-file-word {
+            color: #2b579a;
+        }
+        
+        &.pi-file-excel {
+            color: #1d6f42;
+        }
+        
+        &.pi-image {
+            color: #6f42c1;
+        }
+    }
+}
+
+.upload-progress {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--surface-border);
+
+    h6 {
+        color: var(--text-color);
+        margin: 0 0 1rem 0;
+        font-weight: 600;
+    }
+}
+
+.progress-item {
+    background: var(--surface-b);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--surface-border);
+
+    :host ::ng-deep {
+        .p-progressbar {
+            .p-progressbar-value {
+                background: linear-gradient(90deg, var(--primary-color), var(--primary-600));
+                transition: width 0.3s ease;
+            }
+        }
+    }
+}
+
+.upload-instructions {
+    border: 1px solid rgba(59, 130, 246, 0.2);
+
+    ul {
+        list-style: none;
+        padding-left: 0;
+
+        li {
+            position: relative;
+            padding-left: 1rem;
+            margin-bottom: 0.25rem;
+
+            &::before {
+                content: '•';
+                position: absolute;
+                left: 0;
+                color: var(--blue-500);
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .upload-content {
+        padding: 1rem;
+    }
+
+    .drop-zone {
+        padding: 2rem 1rem;
+
+        i {
+            font-size: 3rem;
+        }
+
+        h5 {
+            font-size: 1rem;
+        }
+    }
+
+    .file-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+
+        .file-info {
+            width: 100%;
+        }
+    }
+
+    .upload-instructions {
+        padding: 1rem;
+
+        ul {
+            font-size: 0.75rem;
+        }
+    }
+}
+
+// Dark theme adjustments
+:host-context(.layout-theme-dark) {
+    .drop-zone {
+        background: var(--surface-100);
+        border-color: var(--surface-400);
+
+        &:hover {
+            background: var(--primary-100);
+        }
+    }
+
+    .file-item {
+        background: var(--surface-100);
+
+        &:hover {
+            background: var(--surface-200);
+        }
+    }
+
+    .progress-item {
+        background: var(--surface-100);
+    }
+
+    .upload-instructions {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+}
+
+// Animation classes
+.fade-in-up {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scale-in {
+    animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

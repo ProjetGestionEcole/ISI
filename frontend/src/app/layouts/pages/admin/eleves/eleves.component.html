@@ -1,0 +1,491 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <!-- Toolbar -->
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="flex align-items-center">
+                        <h1 class="text-2xl font-medium text-900 m-0 mr-4">Gestion des Élèves</h1>
+                        <p-button 
+                            label="Nouveau" 
+                            icon="pi pi-plus" 
+                            severity="success" 
+                            (onClick)="openNew()"
+                            size="small">
+                        </p-button>
+                    </div>
+                </ng-template>
+                
+                <ng-template pTemplate="right">
+                    <div class="flex align-items-center gap-2">
+                        <p-button 
+                            label="Supprimer" 
+                            icon="pi pi-trash" 
+                            severity="danger" 
+                            (onClick)="bulkDelete()"
+                            [disabled]="selectedCount() === 0"
+                            size="small">
+                        </p-button>
+                        <p-button 
+                            label="Exporter" 
+                            icon="pi pi-download" 
+                            severity="help" 
+                            (onClick)="exportEleves()"
+                            size="small">
+                        </p-button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <!-- Search and Filters -->
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-4">
+                <div class="flex align-items-center mb-2 md:mb-0">
+                    <span class="text-600 mr-2">Résultats:</span>
+                    <span class="font-semibold">{{ filteredEleves().length }} élève(s)</span>
+                    <span *ngIf="selectedCount() > 0" class="text-primary-500 ml-2">
+                        ({{ selectedCount() }} sélectionné(s))
+                    </span>
+                </div>
+                
+                <div class="flex align-items-center">
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input 
+                            pInputText 
+                            type="text" 
+                            placeholder="Rechercher..." 
+                            [value]="globalFilter()"
+                            (input)="globalFilter.set($any($event.target).value)"
+                            class="w-full md:w-20rem">
+                    </span>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <p-table 
+                [value]="filteredEleves()" 
+                [(selection)]="selectedEleves"
+                [loading]="loading()"
+                [paginator]="true" 
+                [rows]="10" 
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} élèves"
+                [rowsPerPageOptions]="[10, 25, 50]"
+                [sortMode]="'multiple'"
+                dataKey="id"
+                responsiveLayout="scroll">
+                
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 4rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="matricule">
+                            Matricule
+                            <p-sortIcon field="matricule"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="nom">
+                            Nom Complet
+                            <p-sortIcon field="nom"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="email">
+                            Contact
+                            <p-sortIcon field="email"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="classe_id">Classe</th>
+                        <th pSortableColumn="statut_inscription">
+                            Statut
+                            <p-sortIcon field="statut_inscription"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="date_inscription">
+                            Date Inscription
+                            <p-sortIcon field="date_inscription"></p-sortIcon>
+                        </th>
+                        <th style="width: 12rem">Actions</th>
+                    </tr>
+                </ng-template>
+                
+                <ng-template pTemplate="body" let-eleve>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="eleve"></p-tableCheckbox>
+                        </td>
+                        <td>
+                            <span class="font-semibold text-primary-500">{{ eleve.matricule }}</span>
+                        </td>
+                        <td>
+                            <div class="flex flex-column">
+                                <span class="font-semibold">{{ eleve.prenom }} {{ eleve.nom }}</span>
+                                <small class="text-500">{{ calculateAge(eleve.date_naissance) }} ans - {{ eleve.sexe === 'M' ? 'Masculin' : 'Féminin' }}</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex flex-column">
+                                <span>{{ eleve.email }}</span>
+                                <small class="text-500">{{ formatTelephone(eleve.telephone) }}</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div *ngIf="eleve.classe; else noClasse">
+                                <span class="font-semibold">{{ eleve.classe.code_classe }}</span>
+                                <br>
+                                <small class="text-500">{{ eleve.classe.nom_classe }}</small>
+                            </div>
+                            <ng-template #noClasse>
+                                <p-tag value="Non assigné" severity="warning" styleClass="text-xs"></p-tag>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <p-tag 
+                                [value]="eleve.statut_inscription" 
+                                [severity]="getStatutSeverity(eleve.statut_inscription)"
+                                styleClass="text-xs">
+                            </p-tag>
+                        </td>
+                        <td>
+                            {{ eleve.date_inscription | date:'dd/MM/yyyy' }}
+                        </td>
+                        <td>
+                            <div class="flex gap-1">
+                                <p-button 
+                                    icon="pi pi-eye" 
+                                    severity="info" 
+                                    size="small" 
+                                    pTooltip="Voir détails"
+                                    styleClass="p-button-rounded p-button-text">
+                                </p-button>
+                                <p-button 
+                                    icon="pi pi-pencil" 
+                                    severity="success" 
+                                    size="small" 
+                                    (onClick)="editEleve(eleve)"
+                                    pTooltip="Modifier"
+                                    styleClass="p-button-rounded p-button-text">
+                                </p-button>
+                                <p-button 
+                                    icon="pi pi-upload" 
+                                    severity="help" 
+                                    size="small" 
+                                    (onClick)="openUploadDialog(eleve)"
+                                    pTooltip="Gérer documents"
+                                    styleClass="p-button-rounded p-button-text">
+                                </p-button>
+                                <p-button 
+                                    icon="pi pi-trash" 
+                                    severity="danger" 
+                                    size="small" 
+                                    (onClick)="deleteEleve(eleve)"
+                                    pTooltip="Supprimer"
+                                    styleClass="p-button-rounded p-button-text">
+                                </p-button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <i class="pi pi-users text-4xl text-400 mb-3"></i>
+                            <p class="text-600">Aucun élève trouvé</p>
+                        </td>
+                    </tr>
+                </ng-template>
+                
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <i class="pi pi-spin pi-spinner text-2xl"></i>
+                            <p class="text-600 mt-2">Chargement...</p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- Create/Edit Dialog -->
+<p-dialog 
+    [header]="dialogMode() === 'create' ? 'Nouvel Élève' : 'Modifier Élève'"
+    [(visible)]="displayDialog"
+    [modal]="true"
+    [style]="{width: '50rem'}"
+    [closable]="!saving()"
+    [draggable]="false"
+    [resizable]="false">
+    
+    <form [formGroup]="eleveForm" (ngSubmit)="saveEleve()">
+        <div class="grid">
+            <!-- Informations personnelles -->
+            <div class="col-12">
+                <h5 class="text-primary-500 mb-3">Informations Personnelles</h5>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Nom *</label>
+                <input 
+                    pInputText 
+                    formControlName="nom"
+                    placeholder="Nom de famille"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('nom')"
+                    [class.ng-dirty]="isFieldInvalid('nom')">
+                <small class="p-error" *ngIf="isFieldInvalid('nom')">
+                    {{ getFieldError('nom') }}
+                </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Prénom *</label>
+                <input 
+                    pInputText 
+                    formControlName="prenom"
+                    placeholder="Prénom"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('prenom')"
+                    [class.ng-dirty]="isFieldInvalid('prenom')">
+                <small class="p-error" *ngIf="isFieldInvalid('prenom')">
+                    {{ getFieldError('prenom') }}
+                </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Date de Naissance *</label>
+                <p-datePicker 
+                    formControlName="date_naissance"
+                    placeholder="jj/mm/aaaa"
+                    dateFormat="dd/mm/yy"
+                    [showIcon]="true"
+                    inputId="birthdate"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('date_naissance')"
+                    [class.ng-dirty]="isFieldInvalid('date_naissance')">
+                </p-datePicker>
+                <small class="p-error" *ngIf="isFieldInvalid('date_naissance')">
+                    {{ getFieldError('date_naissance') }}
+                </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Lieu de Naissance *</label>
+                <input 
+                    pInputText 
+                    formControlName="lieu_naissance"
+                    placeholder="Ville de naissance"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('lieu_naissance')"
+                    [class.ng-dirty]="isFieldInvalid('lieu_naissance')">
+                <small class="p-error" *ngIf="isFieldInvalid('lieu_naissance')">
+                    {{ getFieldError('lieu_naissance') }}
+                </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Sexe *</label>
+                <div class="flex gap-3">
+                    <div class="flex align-items-center" *ngFor="let option of sexeOptions">
+                        <p-radioButton 
+                            [inputId]="option.value" 
+                            [value]="option.value" 
+                            formControlName="sexe">
+                        </p-radioButton>
+                        <label [for]="option.value" class="ml-2">{{ option.label }}</label>
+                    </div>
+                </div>
+                <small class="p-error" *ngIf="isFieldInvalid('sexe')">
+                    {{ getFieldError('sexe') }}
+                </small>
+            </div>
+            
+            <!-- Contact -->
+            <div class="col-12">
+                <h5 class="text-primary-500 mb-3 mt-4">Informations de Contact</h5>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Téléphone *</label>
+                <input 
+                    pInputText 
+                    formControlName="telephone"
+                    placeholder="77XXXXXXX"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('telephone')"
+                    [class.ng-dirty]="isFieldInvalid('telephone')">
+                <small class="p-error" *ngIf="isFieldInvalid('telephone')">
+                    {{ getFieldError('telephone') }}
+                </small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Email *</label>
+                <input 
+                    pInputText 
+                    formControlName="email"
+                    placeholder="email@exemple.com"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('email')"
+                    [class.ng-dirty]="isFieldInvalid('email')">
+                <small class="p-error" *ngIf="isFieldInvalid('email')">
+                    {{ getFieldError('email') }}
+                </small>
+            </div>
+            
+            <div class="col-12">
+                <label class="block text-900 font-medium mb-2">Adresse *</label>
+                <input 
+                    pInputText 
+                    formControlName="adresse"
+                    placeholder="Adresse complète"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('adresse')"
+                    [class.ng-dirty]="isFieldInvalid('adresse')">
+                <small class="p-error" *ngIf="isFieldInvalid('adresse')">
+                    {{ getFieldError('adresse') }}
+                </small>
+            </div>
+            
+            <!-- Informations parents -->
+            <div class="col-12">
+                <h5 class="text-primary-500 mb-3 mt-4">Informations Parents (Optionnel)</h5>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Nom du Père</label>
+                <input 
+                    pInputText 
+                    formControlName="nom_pere"
+                    placeholder="Nom complet du père"
+                    class="w-full">
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Nom de la Mère</label>
+                <input 
+                    pInputText 
+                    formControlName="nom_mere"
+                    placeholder="Nom complet de la mère"
+                    class="w-full">
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Téléphone Parent</label>
+                <input 
+                    pInputText 
+                    formControlName="telephone_parent"
+                    placeholder="77XXXXXXX"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('telephone_parent')"
+                    [class.ng-dirty]="isFieldInvalid('telephone_parent')">
+                <small class="p-error" *ngIf="isFieldInvalid('telephone_parent')">
+                    {{ getFieldError('telephone_parent') }}
+                </small>
+            </div>
+            
+            <!-- Scolarité -->
+            <div class="col-12">
+                <h5 class="text-primary-500 mb-3 mt-4">Informations Scolaires</h5>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Classe</label>
+                <p-select 
+                    formControlName="classe_id"
+                    [options]="classes()"
+                    optionLabel="nom_classe"
+                    optionValue="id"
+                    placeholder="Sélectionner une classe"
+                    class="w-full">
+                </p-select>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="block text-900 font-medium mb-2">Statut d'Inscription</label>
+                <p-select 
+                    formControlName="statut_inscription"
+                    [options]="statutOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Sélectionner un statut"
+                    class="w-full">
+                </p-select>
+            </div>
+        </div>
+    </form>
+    
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2">
+            <p-button 
+                label="Annuler" 
+                icon="pi pi-times" 
+                severity="secondary" 
+                (onClick)="displayDialog.set(false)"
+                [disabled]="saving()">
+            </p-button>
+            <p-button 
+                [label]="dialogMode() === 'create' ? 'Créer' : 'Modifier'" 
+                icon="pi pi-check" 
+                (onClick)="saveEleve()"
+                [loading]="saving()">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Upload Documents Dialog -->
+<p-dialog 
+    header="Gérer les Documents"
+    [(visible)]="displayUploadDialog"
+    [modal]="true"
+    [style]="{width: '40rem'}"
+    [closable]="!uploading()"
+    [draggable]="false"
+    [resizable]="false">
+    
+    <div class="flex flex-column gap-4">
+        <div class="text-center">
+            <h6 class="mt-0">Documents pour: {{ selectedEleve()?.prenom }} {{ selectedEleve()?.nom }}</h6>
+            <small class="text-500">Matricule: {{ selectedEleve()?.matricule }}</small>
+        </div>
+        
+        <p-fileUpload 
+            name="documents[]"
+            [multiple]="true"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            [maxFileSize]="5000000"
+            (onUpload)="onUpload($event)"
+            [disabled]="uploading()">
+            
+            <ng-template pTemplate="content">
+                <div class="text-center py-4">
+                    <i class="pi pi-cloud-upload text-4xl text-400 mb-3"></i>
+                    <p class="text-600">Glissez-déposez les fichiers ici ou cliquez pour parcourir</p>
+                    <small class="text-500">Formats acceptés: PDF, Images, Word (max 5MB par fichier)</small>
+                </div>
+            </ng-template>
+        </p-fileUpload>
+        
+        <div *ngIf="uploading()" class="text-center">
+            <p-progressBar mode="indeterminate" styleClass="mb-2"></p-progressBar>
+            <small class="text-500">Upload en cours...</small>
+        </div>
+    </div>
+    
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end">
+            <p-button 
+                label="Fermer" 
+                icon="pi pi-times" 
+                severity="secondary" 
+                (onClick)="displayUploadDialog.set(false)"
+                [disabled]="uploading()">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Toast Messages -->
+<p-toast></p-toast>
+
+<!-- Confirm Dialog -->
+<p-confirmDialog></p-confirmDialog>

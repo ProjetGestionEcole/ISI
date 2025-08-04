@@ -1,0 +1,296 @@
+// Dashboard Admin Styles - Sakai Theme Compatible
+
+.dashboard-card {
+    @apply p-4 border-round shadow-2;
+    background: var(--surface-a);
+    transition: all 0.2s;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.1);
+    }
+}
+
+.stat-icon {
+    @apply flex align-items-center justify-content-center border-round;
+    width: 2.5rem;
+    height: 2.5rem;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        transform: scale(1.1);
+    }
+}
+
+.metric-card {
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+    
+    &.blue {
+        border-left-color: var(--blue-500);
+        
+        .metric-value {
+            color: var(--blue-600);
+        }
+    }
+    
+    &.green {
+        border-left-color: var(--green-500);
+        
+        .metric-value {
+            color: var(--green-600);
+        }
+    }
+    
+    &.orange {
+        border-left-color: var(--orange-500);
+        
+        .metric-value {
+            color: var(--orange-600);
+        }
+    }
+    
+    &.purple {
+        border-left-color: var(--purple-500);
+        
+        .metric-value {
+            color: var(--purple-600);
+        }
+    }
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    
+    canvas {
+        max-height: 100%;
+    }
+}
+
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        left: 1rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--surface-border);
+    }
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -2rem;
+    top: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    z-index: 1;
+    
+    i {
+        font-size: 0.75rem;
+    }
+}
+
+.timeline-content {
+    background: var(--surface-b);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-left: 1rem;
+    
+    h6 {
+        color: var(--text-color);
+        font-weight: 600;
+    }
+}
+
+.quick-action-btn {
+    transition: all 0.2s ease;
+    
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.progress-wrapper {
+    .progress-label {
+        font-size: 0.875rem;
+        color: var(--text-color-secondary);
+    }
+    
+    .progress-value {
+        font-weight: 600;
+        color: var(--text-color);
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .timeline {
+        padding-left: 1.5rem;
+        
+        &::before {
+            left: 0.75rem;
+        }
+    }
+    
+    .timeline-marker {
+        left: -1.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        
+        i {
+            font-size: 0.625rem;
+        }
+    }
+    
+    .timeline-content {
+        margin-left: 0.5rem;
+        padding: 0.75rem;
+    }
+}
+
+// Chart customizations
+:host ::ng-deep {
+    .p-chart canvas {
+        border-radius: var(--border-radius);
+    }
+    
+    .p-progressbar {
+        .p-progressbar-value {
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-color-text));
+        }
+    }
+    
+    // Card hover effects
+    .p-card {
+        transition: all 0.2s ease;
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.1);
+        }
+    }
+    
+    // Button customizations
+    .p-button {
+        &.p-button-outlined {
+            border-width: 1px;
+            transition: all 0.2s ease;
+            
+            &:hover {
+                transform: translateY(-1px);
+            }
+        }
+    }
+    
+    // Tag customizations
+    .p-tag {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    // Skeleton customizations
+    .p-skeleton {
+        border-radius: var(--border-radius);
+    }
+}
+
+// Loading states
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+// Animation keyframes
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+// Error message styling
+.error-message {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-left: 4px solid #ef4444;
+    
+    i {
+        color: #ef4444;
+    }
+}
+
+// Success message styling
+.success-message {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    border-left: 4px solid #22c55e;
+    
+    i {
+        color: #22c55e;
+    }
+}
+
+// Dark theme adjustments
+:host-context(.layout-theme-dark) {
+    .timeline-content {
+        background: var(--surface-c);
+        border-color: var(--surface-d);
+    }
+    
+    .metric-card {
+        background: var(--surface-b);
+    }
+}

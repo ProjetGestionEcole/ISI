@@ -10,12 +10,12 @@ class Enseignement extends Model
     protected $guarded = [];
 
     /**
-     * Un enseignement appartient à un professeur
-     * UML: Enseignement -> Professeur (*)
+     * Un enseignement appartient à un enseignant
+     * UML: Enseignement -> Enseignant (*)
      */
-    public function professeur(): BelongsTo
+    public function enseignant(): BelongsTo
     {
-        return $this->belongsTo(Professeur::class);
+        return $this->belongsTo(Enseignant::class, 'code_prof');
     }
 
     /**
@@ -24,7 +24,7 @@ class Enseignement extends Model
      */
     public function matiere(): BelongsTo
     {
-        return $this->belongsTo(Matiere::class);
+        return $this->belongsTo(Matiere::class, 'code_matiere', 'code_matiere');
     }
 
     /**
@@ -32,7 +32,7 @@ class Enseignement extends Model
      */
     public function classe(): BelongsTo
     {
-        return $this->belongsTo(Classe::class);
+        return $this->belongsTo(Classe::class, 'code_classe', 'code_classe');
     }
 
     /**

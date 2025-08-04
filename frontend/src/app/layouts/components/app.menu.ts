@@ -54,6 +54,16 @@ export class AppMenu {
                     { label: 'Inscriptions', icon: 'pi pi-fw pi-user-plus', routerLink: ['/dashboard/inscription'] },
                     { label: 'Parents', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/leparent'] },
                 ]
+            },
+            {
+                label: 'Administration',
+                items: [
+                    { label: 'Dashboard Admin', icon: 'pi pi-fw pi-chart-line', routerLink: ['/dashboard/admin/dashboard'] },
+                    { label: 'Gestion Élèves', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/admin/eleves'] },
+                    { label: 'Gestion Enseignants', icon: 'pi pi-fw pi-user-plus', routerLink: ['/dashboard/admin/enseignants'] },
+                    { label: 'Gestion Classes', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard/classe'] },
+                    { label: 'Gestion Matières', icon: 'pi pi-fw pi-book', routerLink: ['/dashboard/matiere'] },
+                ]
             }
         ];
     }
