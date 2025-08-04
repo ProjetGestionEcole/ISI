@@ -82,7 +82,9 @@ export class Niveaux implements OnInit {
   loadDemoData() {
     this.niveauServices.getAll().subscribe({
       next: (data: Niveau[]) => {
-        this.niveaux.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.niveaux.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -227,7 +229,9 @@ export class Niveaux implements OnInit {
             const index = this.findIndexById(String(this.niveau.id));
             if (index !== -1) {
               _niveaux[index] = updatedNiveau;
-              this.niveaux.set(_niveaux);
+              // Sort the array after update to maintain order
+              const sortedNiveaux = _niveaux.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.niveaux.set(sortedNiveaux);
             }
             this.messageService.add({
               severity: 'success',
@@ -250,8 +254,10 @@ export class Niveaux implements OnInit {
       } else {
         this.niveauServices.store(this.niveau).subscribe({
           next: (newNiveau) => {
-            const _niveaux = this.niveaux();
-            this.niveaux.set([..._niveaux, newNiveau]);
+            const _niveaux = [...this.niveaux(), newNiveau];
+            // Sort the array after adding new item to maintain order
+            const sortedNiveaux = _niveaux.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.niveaux.set(sortedNiveaux);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

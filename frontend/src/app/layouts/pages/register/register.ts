@@ -75,9 +75,9 @@ export class RegisterComponent {
         this.isLoading = false;
         this.successMessage = 'Inscription réussie! Redirection vers le tableau de bord...';
         
-        // Redirect to dashboard after successful registration
+        // Redirect to app after successful registration
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/app']);
         }, 2000);
       },
       error: (error) => {

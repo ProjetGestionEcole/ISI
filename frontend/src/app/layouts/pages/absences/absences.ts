@@ -55,7 +55,9 @@ export class Absences implements OnInit {
   ngOnInit() {
     this.absenceServices.getAll().subscribe({
       next: (data: Absence[]) => {
-        this.absences.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.absences.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -102,7 +104,9 @@ export class Absences implements OnInit {
             const index = _absences.findIndex(a => a.id === this.absence.id);
             if (index !== -1) {
               _absences[index] = updatedAbsence;
-              this.absences.set(_absences);
+              // Sort the array after update to maintain order
+              const sortedAbsences = _absences.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.absences.set(sortedAbsences);
             }
             this.messageService.add({
               severity: 'success',
@@ -125,8 +129,10 @@ export class Absences implements OnInit {
       } else {
         this.absenceServices.store(this.absence).subscribe({
           next: (newAbsence) => {
-            const _absences = this.absences();
-            this.absences.set([..._absences, newAbsence]);
+            const _absences = [...this.absences(), newAbsence];
+            // Sort the array after adding new item to maintain order
+            const sortedAbsences = _absences.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.absences.set(sortedAbsences);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

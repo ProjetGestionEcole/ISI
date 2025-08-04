@@ -74,7 +74,9 @@ export class Matieres implements OnInit {
   loadDemoData() {
     this.matiereServices.getAll().subscribe({
       next: (data: Matiere[]) => {
-        this.matieres.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.matieres.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -230,7 +232,9 @@ export class Matieres implements OnInit {
             const index = this.findIndexById(String(this.matiere.id));
             if (index !== -1) {
               _matieres[index] = updatedMatiere;
-              this.matieres.set(_matieres);
+              // Sort the array after update to maintain order
+              const sortedMatieres = _matieres.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.matieres.set(sortedMatieres);
             }
             this.messageService.add({
               severity: 'success',
@@ -253,8 +257,10 @@ export class Matieres implements OnInit {
       } else {
         this.matiereServices.store(this.matiere).subscribe({
           next: (newMatiere) => {
-            const _matieres = this.matieres();
-            this.matieres.set([..._matieres, newMatiere]);
+            const _matieres = [...this.matieres(), newMatiere];
+            // Sort the array after adding new item to maintain order
+            const sortedMatieres = _matieres.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.matieres.set(sortedMatieres);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

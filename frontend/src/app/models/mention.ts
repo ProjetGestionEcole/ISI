@@ -1,7 +1,8 @@
 export class Mention {
     id!: number;
-    name!: string;
-    note_min!: number;
-    note_max!: number;
-    description?: string;
+    appreciation!: string;
+    min_moyenne!: number;
+    max_moyenne!: number;
+    created_at?: string;
+    updated_at?: string;
 }

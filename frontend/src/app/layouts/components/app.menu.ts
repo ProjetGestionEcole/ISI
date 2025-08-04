@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 import { AuthService } from '../../services/auth.service';
+import { RoleBasedDataService, DashboardStats } from '../../services/role-based-data.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -20,13 +21,28 @@ import { Subscription } from 'rxjs';
 export class AppMenu implements OnInit, OnDestroy {
     model: MenuItem[] = [];
     private userSubscription: Subscription = new Subscription();
+    private statsSubscription: Subscription = new Subscription();
+    private dashboardStats: DashboardStats | null = null;
 
-    constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+        private roleBasedDataService: RoleBasedDataService
+    ) {}
 
     ngOnInit() {
         // Subscribe to user changes to update menu dynamically
         this.userSubscription = this.authService.currentUser$.subscribe(user => {
+            if (user) {
+                // Load role-based data when user changes
+                this.roleBasedDataService.loadDashboardStats();
+            }
             this.updateMenuBasedOnRole();
+        });
+        
+        // Subscribe to dashboard stats changes
+        this.statsSubscription = this.roleBasedDataService.dashboardStats$.subscribe(stats => {
+            this.dashboardStats = stats;
+            this.updateMenuBasedOnRole(); // Refresh menu with stats
         });
         
         // Initial menu setup
@@ -35,20 +51,78 @@ export class AppMenu implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.userSubscription.unsubscribe();
+        this.statsSubscription.unsubscribe();
     }
 
     private updateMenuBasedOnRole() {
         const userRole = this.authService.getCurrentUserRole();
-        
-        // Common dashboard item for all users
-        const commonItems: MenuItem[] = [
+
+        let commonItems: MenuItem[] = [];
+
+        switch (userRole) {
+        case 'Admin':
+            commonItems = [
             {
                 label: 'Accueil',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin/dashboard'] }
+                ]
+            },
+            ];
+            break;
+        case 'Prof':
+            commonItems = [
+            {
+                label: 'Accueil',
+                items: [
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/prof/dashboard'] }
+                ]
+            },
+            ];
+            break;
+        case 'Etudiant':
+            commonItems = [
+            {
+                label: 'Accueil',
+                items: [
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/etudiant/dashboard'] }
+                ]
+            },
+            ];
+            break;
+        case 'Parent':
+            commonItems = [
+            {
+                label: 'Accueil',
+                items: [
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/parent/dashboard'] }
+                ]
+            },
+            ];
+            break;
+       /* case 'user':
+            commonItems = [
+            {
+                label: 'Accueil',
+                items: [
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/user/dashboard'] }
+                ]
+            },
+            ];
+            break;
+
+        default:
+            commonItems = [
+            {
+                label: 'Accueil',
+                items: [
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
                 ]
             }
-        ];
+            ];
+            break;
+        */
+        }
 
         switch (userRole) {
             case 'Admin':
@@ -75,129 +149,229 @@ export class AppMenu implements OnInit, OnDestroy {
             {
                 label: 'Gestion Utilisateurs',
                 items: [
-                    { label: 'Étudiants', icon: 'pi pi-fw pi-graduation-cap', routerLink: ['/dashboard/etudiants'] },
-                    { label: 'Professeurs', icon: 'pi pi-fw pi-user-edit', routerLink: ['/dashboard/profs'] },
-                    { label: 'Parents', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/parents'] },
-                    { label: 'Administrateurs', icon: 'pi pi-fw pi-shield', routerLink: ['/dashboard/admins'] },
+                    { label: 'Étudiants', icon: 'pi pi-fw pi-graduation-cap', routerLink: ['/app/management/etudiants'] },
+                    { label: 'Professeurs', icon: 'pi pi-fw pi-user-edit', routerLink: ['/app/management/profs'] },
+                    { label: 'Parents', icon: 'pi pi-fw pi-users', routerLink: ['/app/management/parents'] },
+                    { label: 'Administrateurs', icon: 'pi pi-fw pi-shield', routerLink: ['/app/anagement/admins'] },
                 ]
             },
             {
                 label: 'Gestion Académique',
                 items: [
-                    { label: 'Spécialités', icon: 'pi pi-fw pi-book', routerLink: ['/dashboard/specialite'] },
-                    { label: 'Niveaux', icon: 'pi pi-fw pi-sort-amount-up', routerLink: ['/dashboard/niveau'] },
-                    { label: 'Matières', icon: 'pi pi-fw pi-bookmark', routerLink: ['/dashboard/matiere'] },
-                    { label: 'Classes', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/classe'] },
-                    { label: 'Semestres', icon: 'pi pi-fw pi-calendar', routerLink: ['/dashboard/semestre'] },
-                    { label: 'UE', icon: 'pi pi-fw pi-sitemap', routerLink: ['/dashboard/ue'] },
-                    { label: 'Années Scolaires', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/dashboard/annee-scolaire'] },
+                    { label: 'Spécialités', icon: 'pi pi-fw pi-book', routerLink: ['/app/specialite'] },
+                    { label: 'Niveaux', icon: 'pi pi-fw pi-sort-amount-up', routerLink: ['/app/niveau'] },
+                    { label: 'Matières', icon: 'pi pi-fw pi-bookmark', routerLink: ['/app/matiere'] },
+                    { label: 'Classes', icon: 'pi pi-fw pi-users', routerLink: ['/app/classe'] },
+                    { label: 'Semestres', icon: 'pi pi-fw pi-calendar', routerLink: ['/app/semestre'] },
+                    { label: 'UE', icon: 'pi pi-fw pi-sitemap', routerLink: ['/app/ue'] },
+                    { label: 'Années Scolaires', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/app/annee-scolaire'] },
                 ]
             },
             {
                 label: 'Gestion Pédagogique',
                 items: [
-                    { label: 'Enseignements', icon: 'pi pi-fw pi-graduation-cap', routerLink: ['/dashboard/enseignement'] },
-                    { label: 'Notes', icon: 'pi pi-fw pi-star', routerLink: ['/dashboard/note'] },
-                    { label: 'Mentions', icon: 'pi pi-fw pi-trophy', routerLink: ['/dashboard/mention'] },
-                    { label: 'Absences', icon: 'pi pi-fw pi-times-circle', routerLink: ['/dashboard/absence'] },
+                    { label: 'Enseignements', icon: 'pi pi-fw pi-graduation-cap', routerLink: ['/app/enseignement'] },
+                    { label: 'Notes', icon: 'pi pi-fw pi-star', routerLink: ['/app/note'] },
+                    { label: 'Mentions', icon: 'pi pi-fw pi-trophy', routerLink: ['/app/mention'] },
+                    { label: 'Absences', icon: 'pi pi-fw pi-times-circle', routerLink: ['/app/absence'] },
                 ]
             },
             {
                 label: 'Gestion Administrative',
                 items: [
-                    { label: 'Inscriptions', icon: 'pi pi-fw pi-user-plus', routerLink: ['/dashboard/inscription'] },
-                    { label: 'Relations Parent-Enfant', icon: 'pi pi-fw pi-link', routerLink: ['/dashboard/parent-relations'] },
+                    { label: 'Inscriptions', icon: 'pi pi-fw pi-user-plus', routerLink: ['/app/inscription'] },
+                    { label: 'Relations Parent-Enfant', icon: 'pi pi-fw pi-link', routerLink: ['/app/parent-relations'] },
                 ]
             },
             {
                 label: 'Statistiques',
                 items: [
-                    { label: 'Statistiques Système', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/dashboard/system-stats'] },
+                    { label: 'Statistiques Système', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/app/system-stats'] },
                 ]
             }
+
+            
         ];
     }
 
     private getProfMenu(): MenuItem[] {
+        const stats = this.dashboardStats;
         return [
             {
                 label: 'Mon Enseignement',
                 items: [
-                    { label: 'Mes Matières', icon: 'pi pi-fw pi-bookmark', routerLink: ['/dashboard/prof/subjects'] },
-                    { label: 'Mes Classes', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/prof/classes'] },
-                    { label: 'Mes Étudiants', icon: 'pi pi-fw pi-graduation-cap', routerLink: ['/dashboard/prof/students'] },
+                    { 
+                        label: `Mes Enseignements${stats?.enseignements_count ? ` (${stats.enseignements_count})` : ''}`, 
+                        icon: 'pi pi-fw pi-book', 
+                        routerLink: ['/enseignement'] 
+                    },
+                    { 
+                        label: 'Mes Matières', 
+                        icon: 'pi pi-fw pi-bookmark', 
+                        routerLink: ['/matiere'] 
+                    },
+                    { 
+                        label: 'Mes Classes', 
+                        icon: 'pi pi-fw pi-users', 
+                        routerLink: ['/classe'] 
+                    },
                 ]
             },
             {
                 label: 'Gestion des Notes',
                 items: [
-                    { label: 'Ajouter des Notes', icon: 'pi pi-fw pi-plus', routerLink: ['/dashboard/prof/add-notes'] },
-                    { label: 'Mes Notes Ajoutées', icon: 'pi pi-fw pi-star', routerLink: ['/dashboard/prof/my-notes'] },
-                    { label: 'Bulletins', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/dashboard/prof/bulletins'] },
+                    { 
+                        label: `Mes Notes${stats?.notes_added ? ` (${stats.notes_added})` : ''}`, 
+                        icon: 'pi pi-fw pi-star', 
+                        routerLink: ['/note'] 
+                    },
                 ]
             },
             {
                 label: 'Suivi Pédagogique',
                 items: [
-                    { label: 'Absences', icon: 'pi pi-fw pi-times-circle', routerLink: ['/dashboard/prof/absences'] },
-                    { label: 'Statistiques', icon: 'pi pi-fw pi-chart-line', routerLink: ['/dashboard/prof/stats'] },
+                    { 
+                        label: `Absences${stats?.absences_recorded ? ` (${stats.absences_recorded})` : ''}`, 
+                        icon: 'pi pi-fw pi-times-circle', 
+                        routerLink: ['/absence'] 
+                    },
+                    { 
+                        label: 'Statistiques', 
+                        icon: 'pi pi-fw pi-chart-line', 
+                        routerLink: ['/dashboard/prof/stats'] 
+                    },
                 ]
             }
         ];
     }
 
     private getEtudiantMenu(): MenuItem[] {
+        const stats = this.dashboardStats;
         return [
             {
                 label: 'Mon Parcours',
                 items: [
-                    { label: 'Mes Notes', icon: 'pi pi-fw pi-star', routerLink: ['/dashboard/etudiant/notes'] },
-                    { label: 'Mes Absences', icon: 'pi pi-fw pi-times-circle', routerLink: ['/dashboard/etudiant/absences'] },
-                    { label: 'Mon Bulletin', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/dashboard/etudiant/bulletin'] },
-                    { label: 'Mes Statistiques', icon: 'pi pi-fw pi-chart-pie', routerLink: ['/dashboard/etudiant/stats'] },
+                    { 
+                        label: `Mes Notes${stats?.notes_count ? ` (${stats.notes_count})` : ''}`, 
+                        icon: 'pi pi-fw pi-star', 
+                        routerLink: ['/note'] 
+                    },
+                    { 
+                        label: `Mes Absences${stats?.absences_count ? ` (${stats.absences_count})` : ''}`, 
+                        icon: 'pi pi-fw pi-times-circle', 
+                        routerLink: ['/absence'] 
+                    },
+                    { 
+                        label: 'Mon Bulletin', 
+                        icon: 'pi pi-fw pi-file-pdf', 
+                        routerLink: ['/dashboard/etudiant/bulletin'] 
+                    },
+                    { 
+                        label: 'Mes Statistiques', 
+                        icon: 'pi pi-fw pi-chart-pie', 
+                        routerLink: ['/dashboard/etudiant/stats'] 
+                    },
                 ]
             },
             {
                 label: 'Scolarité',
                 items: [
-                    { label: 'Ma Classe', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/etudiant/classe'] },
-                    { label: 'Mes Matières', icon: 'pi pi-fw pi-bookmark', routerLink: ['/dashboard/etudiant/matieres'] },
-                    { label: 'Planning', icon: 'pi pi-fw pi-calendar', routerLink: ['/dashboard/etudiant/planning'] },
+                    { 
+                        label: `Mes Inscriptions${stats?.inscriptions_count ? ` (${stats.inscriptions_count})` : ''}`, 
+                        icon: 'pi pi-fw pi-id-card', 
+                        routerLink: ['/inscription'] 
+                    },
+                    { 
+                        label: 'Ma Classe', 
+                        icon: 'pi pi-fw pi-users', 
+                        routerLink: ['/classe'] 
+                    },
+                    { 
+                        label: 'Mes Matières', 
+                        icon: 'pi pi-fw pi-bookmark', 
+                        routerLink: ['/matiere'] 
+                    },
+                    { 
+                        label: 'Planning', 
+                        icon: 'pi pi-fw pi-calendar', 
+                        routerLink: ['/dashboard/etudiant/planning'] 
+                    },
                 ]
             },
             {
                 label: 'Services',
                 items: [
-                    { label: 'Réclamations', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/dashboard/etudiant/reclamations'] },
-                    { label: 'Demandes', icon: 'pi pi-fw pi-send', routerLink: ['/dashboard/etudiant/demandes'] },
+                    { 
+                        label: 'Réclamations', 
+                        icon: 'pi pi-fw pi-exclamation-triangle', 
+                        routerLink: ['/dashboard/etudiant/reclamations'] 
+                    },
+                    { 
+                        label: 'Demandes', 
+                        icon: 'pi pi-fw pi-send', 
+                        routerLink: ['/dashboard/etudiant/demandes'] 
+                    },
                 ]
             }
         ];
     }
 
     private getParentMenu(): MenuItem[] {
+        const stats = this.dashboardStats;
         return [
             {
                 label: 'Mes Enfants',
                 items: [
-                    { label: 'Liste des Enfants', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/parent/children'] },
-                    { label: 'Notes des Enfants', icon: 'pi pi-fw pi-star', routerLink: ['/dashboard/parent/children-notes'] },
-                    { label: 'Absences des Enfants', icon: 'pi pi-fw pi-times-circle', routerLink: ['/dashboard/parent/children-absences'] },
+                    { 
+                        label: `Liste des Enfants${stats?.children_count ? ` (${stats.children_count})` : ''}`, 
+                        icon: 'pi pi-fw pi-users', 
+                        routerLink: ['/leparent'] 
+                    },
+                    { 
+                        label: `Notes des Enfants${stats?.children_notes ? ` (${stats.children_notes})` : ''}`, 
+                        icon: 'pi pi-fw pi-star', 
+                        routerLink: ['/note'] 
+                    },
+                    { 
+                        label: `Absences des Enfants${stats?.children_absences ? ` (${stats.children_absences})` : ''}`, 
+                        icon: 'pi pi-fw pi-times-circle', 
+                        routerLink: ['/absence'] 
+                    },
                 ]
             },
             {
                 label: 'Suivi Scolaire',
                 items: [
-                    { label: 'Bulletins', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/dashboard/parent/bulletins'] },
-                    { label: 'Statistiques', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/dashboard/parent/stats'] },
-                    { label: 'Évolution', icon: 'pi pi-fw pi-chart-line', routerLink: ['/dashboard/parent/evolution'] },
+                    { 
+                        label: 'Bulletins', 
+                        icon: 'pi pi-fw pi-file-pdf', 
+                        routerLink: ['/dashboard/parent/bulletins'] 
+                    },
+                    { 
+                        label: 'Statistiques', 
+                        icon: 'pi pi-fw pi-chart-bar', 
+                        routerLink: ['/dashboard/parent/stats'] 
+                    },
+                    { 
+                        label: 'Évolution', 
+                        icon: 'pi pi-fw pi-chart-line', 
+                        routerLink: ['/dashboard/parent/evolution'] 
+                    },
                 ]
             },
             {
                 label: 'Communication',
                 items: [
-                    { label: 'Messages', icon: 'pi pi-fw pi-envelope', routerLink: ['/dashboard/parent/messages'] },
-                    { label: 'Rendez-vous', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/dashboard/parent/appointments'] },
+                    { 
+                        label: 'Messages', 
+                        icon: 'pi pi-fw pi-envelope', 
+                        routerLink: ['/dashboard/parent/messages'] 
+                    },
+                    { 
+                        label: 'Rendez-vous', 
+                        icon: 'pi pi-fw pi-calendar-plus', 
+                        routerLink: ['/dashboard/parent/appointments'] 
+                    },
                 ]
             }
         ];

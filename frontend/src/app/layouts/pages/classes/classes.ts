@@ -53,7 +53,9 @@ export class Classes implements OnInit {
   ngOnInit() {
     this.classeServices.getAll().subscribe({
       next: (data: Classe[]) => {
-        this.classes.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.classes.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -98,7 +100,9 @@ export class Classes implements OnInit {
             const index = _classes.findIndex(c => c.id === this.classe.id);
             if (index !== -1) {
               _classes[index] = updatedClasse;
-              this.classes.set(_classes);
+              // Sort the array after update to maintain order
+              const sortedClasses = _classes.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.classes.set(sortedClasses);
             }
             this.messageService.add({
               severity: 'success',
@@ -121,8 +125,10 @@ export class Classes implements OnInit {
       } else {
         this.classeServices.store(this.classe).subscribe({
           next: (newClasse) => {
-            const _classes = this.classes();
-            this.classes.set([..._classes, newClasse]);
+            const _classes = [...this.classes(), newClasse];
+            // Sort the array after adding new item to maintain order
+            const sortedClasses = _classes.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.classes.set(sortedClasses);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

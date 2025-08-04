@@ -73,7 +73,7 @@ export class Specialites implements OnInit {
   exportCSV() {
     this.dt.exportCSV();
   }
-
+  
   ngOnInit() {
     this.loadDemoData();
   }
@@ -81,7 +81,9 @@ export class Specialites implements OnInit {
   loadDemoData() {
     this.specialiteServices.getAll().subscribe({
       next: (data: Specialite[]) => {
-        this.specialites.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.specialites.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -232,7 +234,9 @@ export class Specialites implements OnInit {
             const index = this.findIndexById(String(this.specialite.id));
             if (index !== -1) {
               _specialites[index] = updatedSpecialite;
-              this.specialites.set(_specialites);
+              // Sort the array after update to maintain order
+              const sortedSpecialites = _specialites.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.specialites.set(sortedSpecialites);
             }
             this.messageService.add({
               severity: 'success',
@@ -256,8 +260,10 @@ export class Specialites implements OnInit {
         // Crée une nouvelle spécialité
         this.specialiteServices.store(this.specialite).subscribe({
           next: (newSpecialite) => {
-            const _specialites = this.specialites();
-            this.specialites.set([..._specialites, newSpecialite]);
+            const _specialites = [...this.specialites(), newSpecialite];
+            // Sort the array after adding new item to maintain order
+            const sortedSpecialites = _specialites.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.specialites.set(sortedSpecialites);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

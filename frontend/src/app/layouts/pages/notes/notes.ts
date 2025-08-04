@@ -55,7 +55,9 @@ export class Notes implements OnInit {
   ngOnInit() {
     this.noteServices.getAll().subscribe({
       next: (data: Note[]) => {
-        this.notes.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.notes.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -105,7 +107,9 @@ export class Notes implements OnInit {
             const index = _notes.findIndex(n => n.id === this.note.id);
             if (index !== -1) {
               _notes[index] = updatedNote;
-              this.notes.set(_notes);
+              // Sort the array after update to maintain order
+              const sortedNotes = _notes.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.notes.set(sortedNotes);
             }
             this.messageService.add({
               severity: 'success',
@@ -128,8 +132,10 @@ export class Notes implements OnInit {
       } else {
         this.noteServices.store(this.note).subscribe({
           next: (newNote) => {
-            const _notes = this.notes();
-            this.notes.set([..._notes, newNote]);
+            const _notes = [...this.notes(), newNote];
+            // Sort the array after adding new item to maintain order
+            const sortedNotes = _notes.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.notes.set(sortedNotes);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',

@@ -53,7 +53,9 @@ export class Mentions implements OnInit {
   ngOnInit() {
     this.mentionServices.getAll().subscribe({
       next: (data: Mention[]) => {
-        this.mentions.set(data);
+        // Sort by ID to maintain consistent order
+        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        this.mentions.set(sortedData);
       },
       error: (error) => {
         console.error(error);
@@ -68,10 +70,9 @@ export class Mentions implements OnInit {
   openNew() {
     this.mention = {
       id: 0,
-      name: '',
-      note_min: 0,
-      note_max: 20,
-      description: ''
+      appreciation: '',
+      min_moyenne: 8,
+      max_moyenne: 9.99
     };
     this.submitted = false;
     this.mentionDialog = true;
@@ -89,7 +90,7 @@ export class Mentions implements OnInit {
 
   saveMention() {
     this.submitted = true;
-    if (this.mention.name?.trim()) {
+    if (this.mention.appreciation?.trim()) {
       if (this.mention.id && this.mention.id > 0) {
         this.mentionServices.updateOffre(this.mention).subscribe({
           next: (updatedMention) => {
@@ -97,7 +98,9 @@ export class Mentions implements OnInit {
             const index = _mentions.findIndex(m => m.id === this.mention.id);
             if (index !== -1) {
               _mentions[index] = updatedMention;
-              this.mentions.set(_mentions);
+              // Sort the array after update to maintain order
+              const sortedMentions = _mentions.sort((a, b) => (a.id || 0) - (b.id || 0));
+              this.mentions.set(sortedMentions);
             }
             this.messageService.add({
               severity: 'success',
@@ -120,8 +123,10 @@ export class Mentions implements OnInit {
       } else {
         this.mentionServices.store(this.mention).subscribe({
           next: (newMention) => {
-            const _mentions = this.mentions();
-            this.mentions.set([..._mentions, newMention]);
+            const _mentions = [...this.mentions(), newMention];
+            // Sort the array after adding new item to maintain order
+            const sortedMentions = _mentions.sort((a, b) => (a.id || 0) - (b.id || 0));
+            this.mentions.set(sortedMentions);
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',
@@ -146,7 +151,7 @@ export class Mentions implements OnInit {
 
   deleteMention(mention: Mention) {
     this.confirmationService.confirm({
-      message: 'Êtes-vous sûr de vouloir supprimer ' + mention.name + '?',
+      message: 'Êtes-vous sûr de vouloir supprimer ' + mention.appreciation + '?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
