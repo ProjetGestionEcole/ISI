@@ -1,0 +1,63 @@
+/* Parent Relations management styles */
+.p-toolbar {
+    border-radius: 0.5rem;
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+}
+
+.p-table {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--surface-card);
+}
+
+.p-table .p-table-thead > tr > th {
+    background: var(--surface-section);
+    border-color: var(--surface-border);
+}
+
+.p-table .p-table-tbody > tr {
+    border-color: var(--surface-border);
+}
+
+.p-table .p-table-tbody > tr:hover {
+    background: var(--surface-hover);
+}
+
+.p-dialog .p-dialog-header {
+    background: var(--surface-card);
+    border-color: var(--surface-border);
+}
+
+.p-dialog .p-dialog-content {
+    background: var(--surface-card);
+}
+
+.p-button.p-button-secondary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.p-button.p-button-outlined {
+    background: transparent;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.p-button.p-button-outlined:hover {
+    background: var(--primary-color);
+    color: var(--primary-color-text);
+}
+
+.text-red-500 {
+    color: #ef4444;
+}
+
+.p-dropdown {
+    width: 100%;
+}
+
+.p-dropdown:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem var(--primary-color-alpha);
+}

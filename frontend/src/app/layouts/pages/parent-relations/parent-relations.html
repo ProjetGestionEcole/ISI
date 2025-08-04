@@ -1,0 +1,104 @@
+<p-toast></p-toast>
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()"></p-button>
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedRelations()" [disabled]="!selectedRelations || !selectedRelations.length"></p-button>
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()"></p-button>
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="relations()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['parent_name', 'child_name', 'relationship_type']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedRelations"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} relations"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+    [showGridlines]="false"
+    responsiveLayout="scroll"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Parent-Child Relations</h5>
+            <p-inputGroup>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-search"></i>
+                </span>
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-inputGroup>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem"><p-tableHeaderCheckbox /></th>
+            <th pSortableColumn="parent.name">Parent <p-sortIcon field="parent.name" /></th>
+            <th pSortableColumn="etudiant.name">Enfant <p-sortIcon field="etudiant.name" /></th>
+            <th pSortableColumn="relation">Relation <p-sortIcon field="relation" /></th>
+            <th pSortableColumn="profession">Profession <p-sortIcon field="profession" /></th>
+            <th>Actions</th>
+        </tr>
+    </ng-template>
+
+    <ng-template #body let-relation>
+        <tr>
+            <td><p-tableCheckbox [value]="relation" /></td>
+            <td>{{ relation.parent?.name }}</td>
+            <td>{{ relation.etudiant?.name }}</td>
+            <td>{{ relation.relation }}</td>
+            <td>{{ relation.profession }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editRelation(relation)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteRelation(relation)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- Dialog: Create/Edit -->
+<p-dialog [(visible)]="relationDialog" [style]="{ width: '450px' }" header="Relation Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="user_id" class="block font-bold mb-2">Parent ID</label>
+                <input type="number" pInputText id="user_id" [(ngModel)]="relation.user_id" placeholder="Enter Parent ID" />
+                <small class="text-red-500" *ngIf="submitted && !relation.user_id">Parent ID is required.</small>
+            </div>
+
+            <div>
+                <label for="eleve_id" class="block font-bold mb-2">Student ID</label>
+                <input type="number" pInputText id="eleve_id" [(ngModel)]="relation.eleve_id" placeholder="Enter Student ID" />
+                <small class="text-red-500" *ngIf="submitted && !relation.eleve_id">Student ID is required.</small>
+            </div>
+
+            <div>
+                <label for="relation" class="block font-bold mb-2">Relation Type</label>
+                <input type="text" pInputText id="relation" [(ngModel)]="relation.relation" placeholder="e.g., pere, mere, tuteur" />
+                <small class="text-red-500" *ngIf="submitted && !relation.relation">Relation type is required.</small>
+            </div>
+            
+            <div>
+                <label for="profession" class="block font-bold mb-2">Profession</label>
+                <input type="text" pInputText id="profession" [(ngModel)]="relation.profession" placeholder="Profession (optional)" />
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveRelation()" />
+    </ng-template>
+</p-dialog>
+
+<!-- Confirmation Box -->
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

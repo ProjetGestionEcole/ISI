@@ -1,0 +1,100 @@
+<p-toast></p-toast>
+
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedUsers()" [disabled]="!selectedUsers || !selectedUsers.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="users()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'speciality', 'email']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedUsers"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} professors"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+    [showGridlines]="false"
+    responsiveLayout="scroll"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Professors</h5>
+            <p-inputGroup>
+                <span class="p-inputgroup-addon">
+                    <i class="pi pi-search"></i>
+                </span>
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-inputGroup>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem"><p-tableHeaderCheckbox /></th>
+            <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+            <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
+            <th pSortableColumn="speciality">Speciality <p-sortIcon field="speciality" /></th>
+            <th pSortableColumn="email">Email <p-sortIcon field="email" /></th>
+            <th>Actions</th>
+        </tr>
+    </ng-template>
+
+    <ng-template #body let-user>
+        <tr>
+            <td><p-tableCheckbox [value]="user" /></td>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.speciality }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editUser(user)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteUser(user)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- Dialog: Create/Edit -->
+<p-dialog [(visible)]="userDialog" [style]="{ width: '450px' }" header="Professor Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="name" class="block font-bold mb-2">Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="user.name" required autofocus />
+                <small class="text-red-500" *ngIf="submitted && !user.name">Name is required.</small>
+            </div>
+
+            <div>
+                <label for="speciality" class="block font-bold mb-2">Speciality</label>
+                <input type="text" pInputText id="speciality" [(ngModel)]="user.speciality" required />
+                <small class="text-red-500" *ngIf="submitted && !user.speciality">Speciality is required.</small>
+            </div>
+
+            <div>
+                <label for="email" class="block font-bold mb-2">Email</label>
+                <input type="email" pInputText id="email" [(ngModel)]="user.email" required />
+                <small class="text-red-500" *ngIf="submitted && !user.email">Email is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveUser()" />
+    </ng-template>
+</p-dialog>
+
+<!-- Confirmation Box -->
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
