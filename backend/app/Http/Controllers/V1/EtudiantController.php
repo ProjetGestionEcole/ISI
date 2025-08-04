@@ -212,8 +212,11 @@ class EtudiantController extends Controller
             }
 
             $notes = Note::where('id_etudiant', $user->id)
-                ->with(['enseignement.matiere', 'enseignement.prof'])
-                ->get();
+            ->with([
+                'enseignement.matiere.ue.semestre',
+                'enseignement.prof'
+            ])
+            ->get();
 
             return $this->successResponse($notes, 'Mes notes récupérées avec succès');
         } catch (\Exception $e) {

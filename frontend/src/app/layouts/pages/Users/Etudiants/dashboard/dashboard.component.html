@@ -1,0 +1,105 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h2>Dashboard Étudiant</h2>
+      
+      @if (loading()) {
+        <div class="flex justify-center">
+          <p-progressSpinner></p-progressSpinner>
+        </div>
+      } @else {
+        @if (etudiant()) {
+          <div class="grid">
+            <!-- Student Info Card -->
+            <div class="col-12 lg:col-8">
+              <div class="card">
+                <h3>Informations Personnelles</h3>
+                <div class="grid">
+                  <div class="col-12 md:col-6">
+                    <strong>Nom:</strong> {{ etudiant()?.nom }} {{ etudiant()?.prenom }}
+                  </div>
+                  <div class="col-12 md:col-6">
+                    <strong>Matricule:</strong> {{ etudiant()?.matricule }}
+                  </div>
+                  <div class="col-12 md:col-6">
+                    <strong>Email:</strong> {{ etudiant()?.email }}
+                  </div>
+                  <div class="col-12 md:col-6">
+                    <strong>Téléphone:</strong> {{ etudiant()?.telephone }}
+                  </div>
+                  <div class="col-12 md:col-6">
+                    <strong>Classe:</strong> {{ etudiant()?.classe?.name }}
+                  </div>
+                  <div class="col-12 md:col-6">
+                    <strong>Statut:</strong> 
+                    <p-tag 
+                      [value]="etudiant()?.statut_inscription" 
+                      [severity]="getStatusSeverity(etudiant()?.statut_inscription)">
+                    </p-tag>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="col-12 lg:col-4">
+              <div class="card">
+                <h3>Aperçu Rapide</h3>
+                @if (statistics()) {
+                  <div class="grid">
+                    <div class="col-12">
+                      <div class="surface-100 p-3 border-round">
+                        <div class="text-900 font-medium text-xl mb-2">Notes</div>
+                        <div class="text-600">Dernières évaluations disponibles</div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="surface-100 p-3 border-round">
+                        <div class="text-900 font-medium text-xl mb-2">Absences</div>
+                        <div class="text-600">Ce semestre</div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="grid">
+            <div class="col-12">
+              <div class="card">
+                <h3>Actions Rapides</h3>
+                <div class="flex gap-3 flex-wrap">
+                  <p-button 
+                    label="Voir Mes Notes" 
+                    icon="pi pi-book" 
+                    routerLink="/student/mes-notes">
+                  </p-button>
+                  <p-button 
+                    label="Mes Absences" 
+                    icon="pi pi-calendar-times" 
+                    severity="secondary"
+                    routerLink="/student/mes-absences">
+                  </p-button>
+                  <p-button 
+                    label="Mon Bulletin" 
+                    icon="pi pi-file-pdf" 
+                    severity="info"
+                    routerLink="/student/mon-bulletin">
+                  </p-button>
+                  <p-button 
+                    label="Planning" 
+                    icon="pi pi-calendar" 
+                    severity="help"
+                    routerLink="/student/planning">
+                  </p-button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

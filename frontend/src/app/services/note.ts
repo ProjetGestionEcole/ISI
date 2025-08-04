@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Note } from '../models/note';
 import { BaseService } from './base.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -21,6 +22,15 @@ export class NoteService extends BaseService<Note> {
   // Override getAll to use role-specific endpoint
   override getAll(): Observable<Note[]> {
     const userRole = this.authService.getCurrentUserRole();
+    const cacheKey = `${this.resourceName}_${userRole || 'default'}`;
+    
+    // Check cache first
+    if (this.isCacheValid(cacheKey)) {
+      const cachedData = this.getCache(cacheKey);
+      this.itemsSubject.next(cachedData);
+      return of(cachedData);
+    }
+    
     let endpoint = '';
     
     switch (userRole) {
@@ -45,7 +55,26 @@ export class NoteService extends BaseService<Note> {
         break;
     }
     
-    return this.httpclient.get<Note[]>(endpoint);
+    console.log(`NoteService: Making request to ${endpoint} for role ${userRole}`);
+    
+    return this.httpclient.get<Note[]>(endpoint).pipe(
+      tap(data => {
+        console.log(`NoteService: Received ${data.length} notes from API`);
+        this.setCache(cacheKey, data);
+        this.itemsSubject.next(data);
+      }),
+      catchError(error => {
+        console.error(`Error fetching notes for role ${userRole}:`, error);
+        console.error('Endpoint:', endpoint);
+        console.error('Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          url: error.url
+        });
+        throw error;
+      })
+    );
   }
 
   // Legacy method names for backward compatibility

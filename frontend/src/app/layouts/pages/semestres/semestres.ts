@@ -54,7 +54,7 @@ export class Semestres implements OnInit {
     this.semestreServices.getAll().subscribe({
       next: (data: Semestre[]) => {
         // Sort by ID to maintain consistent order
-        const sortedData = data.sort((a, b) => (a.id || 0) - (b.id || 0));
+        const sortedData = data.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
         this.semestres.set(sortedData);
       },
       error: (error) => {
@@ -69,7 +69,7 @@ export class Semestres implements OnInit {
 
   openNew() {
     this.semestre = {
-      id: 0,
+      id: '',
       code_semestre: '',
       name: '',
       numero: 1,
@@ -96,7 +96,7 @@ export class Semestres implements OnInit {
   saveSemestre() {
     this.submitted = true;
     if (this.semestre.name?.trim()) {
-      if (this.semestre.id && this.semestre.id > 0) {
+      if (this.semestre.id && this.semestre.id.trim() !== '') {
         this.semestreServices.updateOffre(this.semestre).subscribe({
           next: (updatedSemestre) => {
             const _semestres = [...this.semestres()];
@@ -104,7 +104,7 @@ export class Semestres implements OnInit {
             if (index !== -1) {
               _semestres[index] = updatedSemestre;
               // Sort the array after update to maintain order
-              const sortedSemestres = _semestres.sort((a, b) => (a.id || 0) - (b.id || 0));
+              const sortedSemestres = _semestres.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
               this.semestres.set(sortedSemestres);
             }
             this.messageService.add({
@@ -130,7 +130,7 @@ export class Semestres implements OnInit {
           next: (newSemestre) => {
             const _semestres = [...this.semestres(), newSemestre];
             // Sort the array after adding new item to maintain order
-            const sortedSemestres = _semestres.sort((a, b) => (a.id || 0) - (b.id || 0));
+            const sortedSemestres = _semestres.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
             this.semestres.set(sortedSemestres);
             this.messageService.add({
               severity: 'success',

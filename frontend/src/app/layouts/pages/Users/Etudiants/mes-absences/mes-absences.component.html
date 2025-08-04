@@ -1,0 +1,166 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <div class="flex justify-between align-items-center mb-4">
+        <h2>Mes Absences</h2>
+        <div class="flex gap-2">
+          <p-select 
+            [options]="periods" 
+            [(ngModel)]="selectedPeriod"
+            optionLabel="label"
+            placeholder="Sélectionner une période"
+            (onChange)="onPeriodChange()"
+            [style]="{'min-width': '180px'}">
+          </p-select>
+          <p-button 
+            label="Exporter" 
+            icon="pi pi-download" 
+            severity="secondary"
+            (onClick)="exportAbsences()">
+          </p-button>
+        </div>
+      </div>
+
+      <!-- Statistics Cards -->
+      <div class="grid mb-4">
+        <div class="col-12 md:col-3">
+          <div class="surface-card p-3 border-round">
+            <div class="text-900 font-medium text-xl mb-2">
+              {{ getTotalAbsences() }}
+            </div>
+            <div class="text-600">Total Absences</div>
+          </div>
+        </div>
+        <div class="col-12 md:col-3">
+          <div class="surface-card p-3 border-round">
+            <div class="text-900 font-medium text-xl mb-2 text-green-500">
+              {{ getJustifiedAbsences() }}
+            </div>
+            <div class="text-600">Justifiées</div>
+          </div>
+        </div>
+        <div class="col-12 md:col-3">
+          <div class="surface-card p-3 border-round">
+            <div class="text-900 font-medium text-xl mb-2 text-red-500">
+              {{ getUnjustifiedAbsences() }}
+            </div>
+            <div class="text-600">Non Justifiées</div>
+          </div>
+        </div>
+        <div class="col-12 md:col-3">
+          <div class="surface-card p-3 border-round">
+            <div class="text-900 font-medium text-xl mb-2">
+              {{ getTotalHours() }}h
+            </div>
+            <div class="text-600">Heures Perdues</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="mb-3">
+        <span class="block mt-2 md:mt-0 p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input 
+            pInputText 
+            type="text" 
+            (input)="applyFilterGlobal($event, 'contains')" 
+            placeholder="Rechercher par matière..." 
+            class="w-full sm:w-auto"
+          />
+        </span>
+      </div>
+
+      <!-- Absences Table -->
+      <p-table 
+        #dt 
+        [value]="absences()" 
+        [columns]="cols"
+        [paginator]="true" 
+        [rows]="10" 
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} absences"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="loading()"
+        dataKey="id"
+        [globalFilterFields]="['matiere.name', 'motif']">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="date_absence">
+              Date 
+              <p-sortIcon field="date_absence"></p-sortIcon>
+            </th>
+            <th pSortableColumn="matiere.name">
+              Matière
+              <p-sortIcon field="matiere.name"></p-sortIcon>
+            </th>
+            <th pSortableColumn="heure_debut">
+              Heure Début
+              <p-sortIcon field="heure_debut"></p-sortIcon>
+            </th>
+            <th pSortableColumn="heure_fin">
+              Heure Fin
+              <p-sortIcon field="heure_fin"></p-sortIcon>
+            </th>
+            <th pSortableColumn="duree_heures">
+              Durée (h)
+              <p-sortIcon field="duree_heures"></p-sortIcon>
+            </th>
+            <th pSortableColumn="statut">
+              Statut
+              <p-sortIcon field="statut"></p-sortIcon>
+            </th>
+            <th pSortableColumn="motif">
+              Motif
+              <p-sortIcon field="motif"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-absence>
+          <tr>
+            <td>{{ absence.date_absence | date:'short' }}</td>
+            <td>{{ absence.matiere?.name }}</td>
+            <td>{{ absence.heure_debut }}</td>
+            <td>{{ absence.heure_fin }}</td>
+            <td>{{ absence.duree_heures || '-' }}</td>
+            <td>
+              <p-tag 
+                [value]="getAbsenceStatusLabel(absence.statut)" 
+                [severity]="getAbsenceStatusSeverity(absence.statut)">
+              </p-tag>
+            </td>
+            <td>
+              @if (absence.motif) {
+                <span [title]="absence.motif">
+                  {{ absence.motif.length > 30 ? (absence.motif | slice:0:30) + '...' : absence.motif }}
+                </span>
+              } @else {
+                <span class="text-muted">-</span>
+              }
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="text-center p-4">
+              Aucune absence enregistrée pour la période sélectionnée
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <!-- Warning Message for Too Many Absences -->
+      @if (getUnjustifiedAbsences() > 5) {
+        <div class="mt-3">
+          <p-message 
+            severity="warn" 
+            text="Attention: Vous avez un nombre élevé d'absences non justifiées. Veuillez contacter l'administration.">
+          </p-message>
+        </div>
+      }
+    </div>
+  </div>
+</div>

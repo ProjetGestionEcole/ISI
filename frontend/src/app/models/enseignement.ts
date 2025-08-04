@@ -1,3 +1,9 @@
+import { Matiere } from './matiere';
+import { User } from './user';
+import { Classe } from './classe';
+import { AnneeScolaire } from './annee-scolaire';
+import { Note } from './note';
+
 export class Enseignement {
     id?: number; // Primary key
     code_enseignement!: string;
@@ -13,10 +19,10 @@ export class Enseignement {
     created_at?: string;
     updated_at?: string;
     
-    // Relationships (populated when needed)
-    matiere?: any;
-    professeur?: any; // User with Prof role
-    classe?: any;
-    annee_scolaire?: any;
-    notes?: any[]; // Notes for this enseignement
+  // Relationships (populated when needed)
+  matiere?: Matiere;
+  professeur?: User; // User with Prof role
+  classe?: Classe;
+  annee_scolaire?: AnneeScolaire;
+  notes?: Note[]; // Notes for this enseignement
 }

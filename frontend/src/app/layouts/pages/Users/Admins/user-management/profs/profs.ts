@@ -54,12 +54,14 @@ export class Profs implements OnInit {
 
   users = signal<User[]>([]);
 
+
   // Dashboard Statistics Properties
   loading = signal<boolean>(false);
   totalProfesseurs: number = 0;
   totalEnseignements: number = 0;
   totalMatieres: number = 0;
   professeursActifs: number = 0;
+
 
   user!: User;
   cols!: Column[];
@@ -104,7 +106,7 @@ export class Profs implements OnInit {
     this.cols = [
       { field: 'id', header: 'ID' },
       { field: 'name', header: 'Name' },
-      { field: 'speciality', header: 'Speciality' },
+      { field: 'specialite_id', header: 'Specialite' },
       { field: 'email', header: 'Email' },
     ];
 
@@ -177,6 +179,7 @@ export class Profs implements OnInit {
     this.user = {
       id: 0,
       name: '',
+
       speciality: '',
       email: ''
     };

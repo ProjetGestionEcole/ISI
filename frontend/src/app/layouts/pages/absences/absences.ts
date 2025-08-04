@@ -74,6 +74,7 @@ export class Absences implements OnInit {
       id: 0,
       date_absence: '',
       motif: '',
+      statut: 'non_justifiee',
       justifiee: false,
       etudiant_id: 0,
       matiere_id: 0,
